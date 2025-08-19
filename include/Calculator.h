@@ -15,6 +15,8 @@ public:
     double getVariable(const string& name) const;
 
     double setVariable(const string& name, double value);
+
+    void printVars() const;
 };
 
 #endif //CALCULATOR_H
