@@ -7,14 +7,16 @@ using namespace std;
 class Calculator{
 private:
     map<string, double> variables;
+    map<string, unique_ptr<Node>> varNodes;
 public:
+    Calculator();
     double evaluate(unique_ptr<Node> expression);
 
-    double assign(const string& name, double value);
+    void assign(const string& name, double value);
 
-    double getVariable(const string& name) const;
+    unique_ptr<Node> getVariable(const string& name) ;
 
-    double setVariable(const string& name, double value);
+    void setVariable(const string& name, double value);
 };
 
 #endif //CALCULATOR_H

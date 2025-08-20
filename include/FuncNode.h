@@ -205,24 +205,5 @@ public:
     }
 };
 
-class PowerNode : public Node {
-private:
-    unique_ptr<Node> base;
-    unique_ptr<Node> exponent;
-
-public:
-    PowerNode(unique_ptr<Node> base, unique_ptr<Node> exponent)
-        : base(move(base)), exponent(move(exponent)) {}
-
-    double evaluate(const map<string, double>& variables) const override {
-        double baseValue = base->evaluate(variables);
-        double exponentValue = exponent->evaluate(variables);
-        return pow(baseValue, exponentValue);
-    }
-
-    Node* clone() const override {
-        return new PowerNode(unique_ptr<Node>(base->clone()), unique_ptr<Node>(exponent->clone()));
-    }
-};
 
 #endif // FUNCNODE_H
