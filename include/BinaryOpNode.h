@@ -7,6 +7,9 @@
 
 using namespace std;
 
+// List of operations: 
+// Add, Subtract, Multiply, Divide, Power
+
 class AddNode : public Node {
 private: 
     unique_ptr<Node> child1;

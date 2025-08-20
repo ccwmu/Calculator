@@ -1,7 +1,7 @@
 {
     "C_Cpp.default.compilerPath": "C:/msys64/ucrt64/bin/g++.exe", 
     "code-runner.executorMap": {
-        "cpp": "g++ -std=c++17 -Iinclude -O2 -Wall -Wextra -g \"$dir/$fileName\" -o build/$fileNameWithoutExt.exe && .\\build\\$fileNameWithoutExt.exe"
+        "cpp": "cd \"$workspaceRoot\" && g++ -std=c++17 -Iinclude -mconsole -O2 -g src/main.cpp src/Lexicography.cpp src/Parser.cpp src/Calculator.cpp -o build/calculator.exe && .\\build\\calculator.exe"
     },
     "code-runner.runInTerminal": true,
     "code-runner.saveFileBeforeRun": true,

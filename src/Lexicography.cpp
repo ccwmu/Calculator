@@ -1,4 +1,5 @@
 #include "Lexicography.h"
+#include <iostream>
 #include <cctype>
 #include <stdexcept>
 
@@ -59,6 +60,7 @@ vector<Token> tokenize(const string& input) {
             }
         }
     }
-    tokens.emplace_back(TokenType::END, ""); // end token
+    tokens.emplace_back(TokenType::END, " "); // end token
     return tokens;
 }
+

@@ -6,6 +6,17 @@
 #include <stdexcept>
 using namespace std;
 
+// List of functions:
+// Sin (1 arg)
+// Cos (1 arg)
+// Tan (1 arg)
+// Asin (1 arg)
+// Acos (1 arg)
+// Atan (1 arg)
+// Exp (1 arg)
+// Ln (1 arg)
+// Log10 (1 arg)
+
 class SinNode : public Node {
 private:
     unique_ptr<Node> child;
