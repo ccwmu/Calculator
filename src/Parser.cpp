@@ -119,7 +119,7 @@ unique_ptr<Node> Parser::parseUnary() {
 unique_ptr<Node> Parser::parsePrimary() {
     // Numbers
     if (checkType(TokenType::NUMBER)) {
-        double value = stod(curr().value);
+        long double value = stod(curr().value);
         next();
         return make_unique<NumberNode>(value);
     }

@@ -94,12 +94,12 @@ int main() {
             if (parser.isAssignment()) {
                 //cout << "variable" << endl;
                 string varName = parser.getAssignVar();
-                double result = calc.evaluate(move(expression));
+                long double result = calc.evaluate(move(expression));
                 calc.assign(varName, result);
                 cout << varName << " = " << result << endl;
             } else {
                 
-                double result = calc.evaluate(move(expression));
+                long double result = calc.evaluate(move(expression));
                 cout << input << " = " << result << endl;
             }
         } catch (const exception& e) {
@@ -109,5 +109,3 @@ int main() {
 
     return 0;
 }
-
-

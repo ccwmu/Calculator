@@ -6,13 +6,13 @@
 
 class NumberNode : public Node {
 public:
-    NumberNode(double value) : value(value) {}
-    double evaluate(const std::map<std::string, double>& variables) const override { return value; }
+    NumberNode(long double value) : value(value) {}
+    long double evaluate(const std::map<std::string, long double>& variables) const override { return value; }
     Node* clone() const override {
         return new NumberNode(value);
     }
 private:
-    double value;
+    long double value;
 };
 
 #endif // NUMBERNODE_H

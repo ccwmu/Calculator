@@ -8,7 +8,7 @@
 class Node {
 public:
     virtual ~Node() = default;
-    virtual double evaluate(const std::map<std::string, double>& variables) const = 0;
+    virtual long double evaluate(const std::map<std::string, long double>& variables) const = 0;
     virtual Node* clone() const = 0;
 };
 

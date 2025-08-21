@@ -15,7 +15,7 @@ using namespace std;
 // Atan (1 arg)
 // Exp (1 arg)
 // Ln (1 arg)
-// Log10 (1 arg)
+// Log10 (1 arg)s
 
 class SinNode : public Node {
 private:
@@ -25,7 +25,7 @@ public:
     SinNode(unique_ptr<Node> arg)
         : child(move(arg)) {}
 
-    double evaluate(const map<string, double>& variables) const override {
+    long double evaluate(const map<string, long double>& variables) const override {
         return sin(child->evaluate(variables));
     }
     Node* clone() const override {
@@ -41,7 +41,7 @@ public:
     CosNode(unique_ptr<Node> arg)
         : child(move(arg)) {}
 
-    double evaluate(const map<string, double>& variables) const override {
+    long double evaluate(const map<string, long double>& variables) const override {
         return cos(child->evaluate(variables));
     }
     Node* clone() const override {
@@ -57,7 +57,7 @@ public:
     TanNode(unique_ptr<Node> arg)
         : child(move(arg)) {}
 
-    double evaluate(const map<string, double>& variables) const override {
+    long double evaluate(const map<string, long double>& variables) const override {
         return tan(child->evaluate(variables));
     }
     Node* clone() const override {
@@ -73,7 +73,7 @@ public:
     ArcSinNode(unique_ptr<Node> arg)
         : child(move(arg)) {}
 
-    double evaluate(const map<string, double>& variables) const override {
+    long double evaluate(const map<string, long double>& variables) const override {
         return asin(child->evaluate(variables));
     }
     Node* clone() const override {
@@ -89,7 +89,7 @@ public:
     ArcCosNode(unique_ptr<Node> arg)
         : child(move(arg)) {}
 
-    double evaluate(const map<string, double>& variables) const override {
+    long double evaluate(const map<string, long double>& variables) const override {
         return acos(child->evaluate(variables));
     }
     Node* clone() const override {
@@ -105,7 +105,7 @@ public:
     ArcTanNode(unique_ptr<Node> arg)
         : child(move(arg)) {}
 
-    double evaluate(const map<string, double>& variables) const override {
+    long double evaluate(const map<string, long double>& variables) const override {
         return atan(child->evaluate(variables));
     }
     Node* clone() const override {
@@ -121,7 +121,7 @@ public:
     ExpNode(unique_ptr<Node> arg)
         : child(move(arg)) {}
 
-    double evaluate(const map<string, double>& variables) const override {
+    long double evaluate(const map<string, long double>& variables) const override {
         return exp(child->evaluate(variables));
     }
     Node* clone() const override {
@@ -137,8 +137,8 @@ public:
     LnNode(unique_ptr<Node> arg)
         : child(move(arg)) {}
 
-    double evaluate(const map<string, double>& variables) const override {
-        double val = child->evaluate(variables);
+    long double evaluate(const map<string, long double>& variables) const override {
+        long double val = child->evaluate(variables);
         if (val <= 0.0) {
             throw runtime_error("Logarithm of non-positive value");
         }
@@ -157,8 +157,8 @@ public:
     LogTenNode(unique_ptr<Node> arg)
         : child(move(arg)) {}
 
-    double evaluate(const map<string, double>& variables) const override {
-        double val = child->evaluate(variables);
+    long double evaluate(const map<string, long double>& variables) const override {
+        long double val = child->evaluate(variables);
         if (val <= 0.0) {
             throw runtime_error("Logarithm of non-positive value");
         }
@@ -178,8 +178,8 @@ public:
     LogNode(unique_ptr<Node> value, unique_ptr<Node> base)
         : val(move(value)), base(move(base)) {}
 
-    double evaluate(const map<string, double>& variables) const override {
-        double baseValue = base->evaluate(variables);
+    long double evaluate(const map<string, long double>& variables) const override {
+        long double baseValue = base->evaluate(variables);
         if (baseValue == 1.0) {
             throw runtime_error("Logarithm base cannot be 1");
         }
@@ -203,8 +203,8 @@ public:
     SqrtNode(unique_ptr<Node> arg)
         : child(move(arg)) {}
 
-    double evaluate(const map<string, double>& variables) const override {
-        double val = child->evaluate(variables);
+    long double evaluate(const map<string, long double>& variables) const override {
+        long double val = child->evaluate(variables);
         if (val < 0.0) {
             throw runtime_error("Square root of negative value");
         }

@@ -6,17 +6,17 @@
 using namespace std;
 class Calculator{
 private:
-    map<string, double> variables;
+    map<string, long double> variables;
     map<string, unique_ptr<Node>> varNodes;
 public:
     Calculator();
-    double evaluate(unique_ptr<Node> expression);
+    long double evaluate(unique_ptr<Node> expression);
 
-    void assign(const string& name, double value);
+    void assign(const string& name, long double value);
 
     unique_ptr<Node> getVariable(const string& name) ;
 
-    void setVariable(const string& name, double value);
+    void setVariable(const string& name, long double value);
     void printVars() const;
     void clear();
 };

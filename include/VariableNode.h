@@ -14,7 +14,7 @@ public:
     VariableNode(const string& varName)
         : name(varName) {}
 
-    double evaluate(const map<string, double>& variables) const override {
+    long double evaluate(const map<string, long double>& variables) const override {
         auto it = variables.find(name);
         if (it != variables.end()) {
             return it->second;

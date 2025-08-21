@@ -1,6 +1,5 @@
 #ifndef PARSER_H
 #define PARSER_H
-
 #include "Lexicography.h"
 #include "Node.h"
 #include <memory>

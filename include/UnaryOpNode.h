@@ -13,7 +13,7 @@ public:
     NegateNode(unique_ptr<Node> operand)
         : child(move(operand)) {}
 
-    double evaluate(const map<string, double>& variables) const override {
+    long double evaluate(const map<string, long double>& variables) const override {
         return -child->evaluate(variables);
     }
     Node* clone() const override {
@@ -29,7 +29,7 @@ public:
     PlusNode(unique_ptr<Node> operand)
         : child(move(operand)) {}
 
-    double evaluate(const map<string, double>& variables) const override {
+    long double evaluate(const map<string, long double>& variables) const override {
         return child->evaluate(variables);
     }
     Node* clone() const override {
@@ -44,7 +44,7 @@ private:
 public: 
     AbsNode(unique_ptr<Node> operand) : child(move(operand)) {}
 
-    double evaluate(const map<string, double>& variables) const override {
+    long double evaluate(const map<string, long double>& variables) const override {
         return abs(child->evaluate(variables));
     }
     Node* clone() const override {

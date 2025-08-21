@@ -3,15 +3,15 @@
 #include <iostream>
 
 Calculator::Calculator() {
-    variables = map<string, double>();
+    variables = map<string, long double>();
     varNodes = map<string, unique_ptr<Node>>();
 }
 
-double Calculator::evaluate(unique_ptr<Node> expression) {
+long double Calculator::evaluate(unique_ptr<Node> expression) {
     return expression->evaluate(variables);
 }
 
-void Calculator::assign(const string& name, double value) {
+void Calculator::assign(const string& name, long double value) {
     variables[name] = value;
     varNodes[name] = make_unique<VariableNode>(name);
 }
@@ -24,7 +24,7 @@ unique_ptr<Node> Calculator::getVariable(const string& name)  {
     throw runtime_error("variable not found");
 }
 
-void Calculator::setVariable(const string& name, double value) {
+void Calculator::setVariable(const string& name, long double value) {
     variables[name] = value;
 }
 
@@ -35,7 +35,7 @@ void Calculator::printVars() const {
 }
 
 void Calculator::clear() {
-    std::map<std::string, double> preserverValues = {
+    std::map<std::string, long double> preserverValues = {
         {"pi", 3.141592653589793},
         {"e", 2.718281828459045},
         {"deg2rad", 3.141592653589793 / 180},
