@@ -37,6 +37,7 @@ vector<Token> tokenize(const string& input) {
                 word == "sqrt" ||
                 word == "logten" ||
                 word == "ln" ||
+                word == "abs" ||
                 word == "pow"
             ){
                 tokens.emplace_back(TokenType::FUNCTION, word);

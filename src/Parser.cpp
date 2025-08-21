@@ -135,6 +135,7 @@ unique_ptr<Node> Parser::parsePrimary() {
     // Absolute value
 
     if (checkType(TokenType::ABS)) {
+        next();
         unique_ptr<Node> expr = parseExpression();
         if (!checkType(TokenType::ABS)) {
             throw runtime_error("Expected closing | for absolute value expression");
