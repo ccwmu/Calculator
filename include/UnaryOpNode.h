@@ -37,4 +37,19 @@ public:
     }
 };
 
+class AbsNode : public Node {
+private:
+    unique_ptr<Node> child;
+
+public: 
+    AbsNode(unique_ptr<Node> operand) : child(move(operand)) {}
+
+    double evaluate(const map<string, double>& variables) const override {
+        return abs(child->evaluate(variables));
+    }
+    Node* clone() const override {
+        return new AbsNode(unique_ptr<Node>(child->clone()));
+    }
+};
+
 #endif // UNARYOPNODE_H

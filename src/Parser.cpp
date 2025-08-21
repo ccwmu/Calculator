@@ -132,6 +132,17 @@ unique_ptr<Node> Parser::parsePrimary() {
         return make_unique<VariableNode>(name);
     }
 
+    // Absolute value
+
+    if (checkType(TokenType::ABS)) {
+        unique_ptr<Node> expr = parseExpression();
+        if (!checkType(TokenType::ABS)) {
+            throw runtime_error("Expected closing | for absolute value expression");
+        }
+        next();
+        return make_unique<AbsNode>(move(expr));
+    }
+
     // Functions 
 
     if (checkType(TokenType::FUNCTION)) {
@@ -174,6 +185,7 @@ unique_ptr<Node> Parser::parsePrimary() {
         if (funcName == "ln") { return make_unique<LnNode>(move(argument)); }
         if (funcName == "log10") { return make_unique<LogTenNode>(move(argument)); }
         if (funcName == "sqrt") { return make_unique<SqrtNode>(move(argument)); }
+        if (funcName == "abs") { return make_unique<AbsNode>(move(argument)); }
 
         throw runtime_error("Unknown function: " + funcName);
 

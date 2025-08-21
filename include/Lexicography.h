@@ -18,6 +18,7 @@ enum class TokenType {
     RIGHTPAREN, 
     ASSIGN, 
     COMMA, 
+    ABS,
     END
 };
 
