@@ -33,3 +33,17 @@ void Calculator::printVars() const {
         cout << pair.first << " = " << pair.second << endl;
     }
 }
+
+void Calculator::clear() {
+    std::map<std::string, double> preserverValues = {
+        {"pi", 3.141592653589793},
+        {"e", 2.718281828459045},
+        {"deg2rad", 3.141592653589793 / 180},
+        {"rad2deg", 180 / 3.141592653589793}
+    };
+    variables.clear();
+    varNodes.clear();
+    for (const auto& pair : preserverValues) {
+        assign(pair.first, pair.second);
+    }
+}

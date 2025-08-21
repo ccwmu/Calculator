@@ -78,6 +78,7 @@ int main() {
         if (input == "exit") break;
         if (input == "help") { cout << HELP_MESSAGE << endl; continue; }
         if (input == "vars") { calc.printVars(); continue; }
+        if (input == "clear") { calc.clear(); cout << "Variables cleared." << endl; continue; }
         // Process input
         try {
             vector<Token> tokens = tokenize(input);

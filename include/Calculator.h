@@ -18,6 +18,7 @@ public:
 
     void setVariable(const string& name, double value);
     void printVars() const;
+    void clear();
 };
 
 #endif //CALCULATOR_H
