@@ -73,7 +73,7 @@ int main() {
 
 
     while (true) {
-        cout << ">>> ";
+        cout << "> ";
         getline(cin, input);
         if (input.empty()) continue;
         if (input == "exit") break;
