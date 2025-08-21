@@ -18,6 +18,7 @@ const string HELP_MESSAGE =
     "  +, -, *, /          Basic arithmetic\n"
     "  ^                   Exponentiation (2^3 = 8)\n"
     "  ( )                 Parentheses for grouping\n"
+    "  | |                 Absolute value\n"
     "\n"
     "VARIABLES:\n"
     "  x = 5               Assign value to variable\n"
