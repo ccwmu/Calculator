@@ -58,7 +58,7 @@ vector<Token> tokenize(const string& input) {
                 case '=': tokens.emplace_back(TokenType::ASSIGN, "="); break;
                 case ',': tokens.emplace_back(TokenType::COMMA, ","); break;
                 case '|': tokens.emplace_back(TokenType::ABS, "|"); break;
-                default: throw runtime_error("Unknown character: " + string(1, c));
+                default: throw runtime_error(string(1, c) + " is not recognized as a variable, function, or operation");
             }
         }
     }

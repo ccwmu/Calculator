@@ -58,6 +58,7 @@ public:
     }
 };
 
+
 class SubtractNode : public Node {
 private: 
     unique_ptr<Node> child1;
@@ -124,7 +125,7 @@ public:
 
     long double evaluate(const map<string, long double>& variables) const override {
         if (base->evaluate(variables) < 0 && exponent->evaluate(variables) != floor(exponent->evaluate(variables))) {
-            throw runtime_error("Invalid operation: negative base with non-integer exponent");
+            throw runtime_error("negative base with non-integer exponent");
         }
         return pow(base->evaluate(variables), exponent->evaluate(variables));
     }

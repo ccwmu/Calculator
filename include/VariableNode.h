@@ -19,7 +19,7 @@ public:
         if (it != variables.end()) {
             return it->second;
         }
-        throw runtime_error("Undefined variable: " + name);
+        throw runtime_error(name + " is not recognized as a variable, function, or operation");
     }
 
     Node* clone() const override {

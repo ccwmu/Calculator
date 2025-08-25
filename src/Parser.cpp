@@ -138,7 +138,7 @@ unique_ptr<Node> Parser::parsePrimary() {
         next();
         unique_ptr<Node> expr = parseExpression();
         if (!checkType(TokenType::ABS)) {
-            throw runtime_error("Expected closing | for absolute value expression");
+            throw runtime_error("expected closing | for absolute value expression");
         }
         next();
         return make_unique<AbsNode>(move(expr));
@@ -151,19 +151,19 @@ unique_ptr<Node> Parser::parsePrimary() {
         next();
 
         if (!checkType(TokenType::LEFTPAREN)) {
-                throw runtime_error("Expected '(' after function name");
+                throw runtime_error("expected '(' after function name");
             }
         next();
         if (funcName == "log") {
             unique_ptr<Node> arg1 = parseExpression();
             if (!checkType(TokenType::COMMA)) {
-                throw runtime_error("Expected ',' between log arguments");
+                throw runtime_error("expected ',' between log arguments");
             }
             next();
             unique_ptr<Node> arg2 = parseExpression();
 
             if (!checkType(TokenType::RIGHTPAREN)) {
-                throw runtime_error("Expected ')' after function arguments");
+                throw runtime_error("expected ')' after function arguments");
             }
             next();
             return make_unique<LogNode>(move(arg1), move(arg2));
@@ -172,7 +172,7 @@ unique_ptr<Node> Parser::parsePrimary() {
         unique_ptr<Node> argument = parseExpression();
 
         if (!checkType(TokenType::RIGHTPAREN)) {
-            throw runtime_error("Expected ')' after function argument");
+            throw runtime_error("expected ')' after function argument");
         }
         next();
 
@@ -188,7 +188,7 @@ unique_ptr<Node> Parser::parsePrimary() {
         if (funcName == "sqrt") { return make_unique<SqrtNode>(move(argument)); }
         if (funcName == "abs") { return make_unique<AbsNode>(move(argument)); }
 
-        throw runtime_error("Unknown function: " + funcName);
+        throw runtime_error(funcName + " is not recognized as a variable, function, or operation");
 
     }
 
@@ -196,12 +196,12 @@ unique_ptr<Node> Parser::parsePrimary() {
         next();
         unique_ptr<Node> expr = parseExpression();
         if (!checkType(TokenType::RIGHTPAREN)) {
-            throw runtime_error("Expected ')' after expression");
+            throw runtime_error("expected ')' after expression");
         }
         next();
         return expr;
     }
 
-    throw runtime_error("Unexpected element in primary expression");
+    throw runtime_error("unexpected element in expression");
 
 }

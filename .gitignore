@@ -5,3 +5,5 @@ build/
 *.pdb
 .vscode/
 .DS_Store
+.vs/
+out/

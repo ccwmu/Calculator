@@ -140,7 +140,7 @@ public:
     long double evaluate(const map<string, long double>& variables) const override {
         long double val = child->evaluate(variables);
         if (val <= 0.0) {
-            throw runtime_error("Logarithm of non-positive value");
+            throw runtime_error("logarithm of non-positive value");
         }
         return log(val);
     }
@@ -160,7 +160,7 @@ public:
     long double evaluate(const map<string, long double>& variables) const override {
         long double val = child->evaluate(variables);
         if (val <= 0.0) {
-            throw runtime_error("Logarithm of non-positive value");
+            throw runtime_error("logarithm of non-positive value");
         }
         return log10(val);
     }
@@ -181,10 +181,10 @@ public:
     long double evaluate(const map<string, long double>& variables) const override {
         long double baseValue = base->evaluate(variables);
         if (baseValue == 1.0) {
-            throw runtime_error("Logarithm base cannot be 1");
+            throw runtime_error("logarithm base of 1");
         }
         if (baseValue <= 0.0 || val->evaluate(variables) <= 0.0) {
-            throw runtime_error("Logarithm of non-positive value");
+            throw runtime_error("logarithm of non-positive value");
         }
         return log(val->evaluate(variables)) / log(baseValue);
     }
@@ -206,7 +206,7 @@ public:
     long double evaluate(const map<string, long double>& variables) const override {
         long double val = child->evaluate(variables);
         if (val < 0.0) {
-            throw runtime_error("Square root of negative value");
+            throw runtime_error("square root of negative value");
         }
         return sqrt(val);
     }
