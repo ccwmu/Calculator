@@ -47,3 +47,104 @@ void Calculator::clear() {
         assign(pair.first, pair.second);
     }
 }
+
+std::string Calculator::formatNumber(long double value) {
+    std::string str = std::to_string(value);
+    // Remove trailing zeros
+    str.erase(str.find_last_not_of('0') + 1, std::string::npos);
+    // If the last character is a decimal point, remove it
+    if (!str.empty() && str.back() == '.') {
+        str.pop_back();
+    }
+    return str;
+}
+
+std::string Calculator::printTokens(std::vector<Token> tokens)
+{
+    std::string result = "";
+    //not to be confused with a debug function
+    TokenType prevType = TokenType::END;
+    size_t absCounter = 0;
+    for (size_t i = 0; i < tokens.size(); ++i) {
+        const Token& token = tokens[i];
+        // Skip end tokens
+        if (token.type == TokenType::END) { continue; }
+
+        // There are never spaces after left parenthesis or function names
+        if (token.type == TokenType::LEFTPAREN || 
+            token.type == TokenType::FUNCTION) { result += token.value; }
+        
+        // Handle number, where in some cases we want a space after and in some cases we don't
+        if (token.type == TokenType::NUMBER) {
+            result += formatNumber(stod(token.value)); 
+
+            // The only cases where we don't want a space after a number is when there is a 
+            // closing parenthesis or a comma right after
+            if (i + 1 < tokens.size() && tokens[i + 1].type == TokenType::RIGHTPAREN ||
+                i + 1 < tokens.size() && tokens[i + 1].type == TokenType::COMMA) {
+                prevType = token.type;
+                continue;
+            }
+            result += " ";
+        }
+
+        // Handle variables, where in some cases we want a space after and in some cases we don't
+        if (token.type == TokenType::VARIABLE) {
+            result += token.value;
+            
+            // Same as in number, we don't want a space if there is a closing paren or a comma.
+            if (i + 1 < tokens.size() && tokens[i + 1].type == TokenType::RIGHTPAREN ||
+                i + 1 < tokens.size() && tokens[i + 1].type == TokenType::COMMA) {
+                prevType = token.type;
+                continue;
+            }
+            result += " ";
+        }
+
+        // We always want spaces after operators, commas, and assignment operators
+        if (token.type == TokenType::PLUS ||
+            token.type == TokenType::MINUS ||
+            token.type == TokenType::MULTIPLY ||
+            token.type == TokenType::DIVIDE ||
+            token.type == TokenType::POWER ||
+            token.type == TokenType::COMMA ||
+            token.type == TokenType::ASSIGN) {
+            result += token.value + " ";
+        }
+
+        // Special case for absolute value ||
+        // We don't want a space after the first absolute value, but we do want one after the second.
+        if (token.type == TokenType::ABS) {
+
+            // First absolute value - no space
+            if (absCounter % 2 == 0) { result += token.value; } 
+
+            // Second absolute value - add space
+            else { result += token.value + " "; }
+            absCounter++;
+        }
+        prevType = token.type;
+        
+        // Sometimes we want a space after right parenthesis, but sometimes we don't.
+        if (token.type == TokenType::RIGHTPAREN) {
+            result += token.value;
+            if (i + 1 < tokens.size() && (tokens[i + 1].type == TokenType::ASSIGN || 
+                tokens[i + 1].type == TokenType::END)) {
+                result += " ";
+			}
+
+            // We want a space if the next token is an operator
+            if (i + 1 < tokens.size() && (tokens[i + 1].type == TokenType::PLUS ||
+                tokens[i + 1].type == TokenType::MINUS ||
+                tokens[i + 1].type == TokenType::MULTIPLY ||
+                tokens[i + 1].type == TokenType::DIVIDE ||
+                tokens[i + 1].type == TokenType::POWER ||
+                tokens[i + 1].type == TokenType::COMMA ||
+                tokens[i + 1].type == TokenType::ASSIGN)) {
+                result += " ";
+            }
+            
+        }
+    }
+    return result;
+}

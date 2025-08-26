@@ -11,7 +11,7 @@ class Parser {
 private:
     vector<Token> tokens;
     size_t currIndex;
-    bool assignment;
+    bool containsNewVar = false;
     string assignmentVar;
     
     Token& prev();                   // Previous Token
@@ -33,7 +33,12 @@ private:
 public: 
     Parser(vector<Token> tokens);
     unique_ptr<Node> parse();
-    bool isAssignment() const { return assignment; }
+    bool isAssignment() const {
+        for (Token token : tokens) {
+            if (token.type == TokenType::ASSIGN) { return true; }
+		}
+        return false;
+    }
     string getAssignVar() const { return assignmentVar; }
 
 };

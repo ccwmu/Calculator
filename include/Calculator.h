@@ -2,6 +2,7 @@
 #define CALCULATOR_H
 
 #include "Node.h"
+#include "Lexicography.h"
 #include <stdexcept>
 using namespace std;
 class Calculator{
@@ -19,6 +20,8 @@ public:
     void setVariable(const string& name, long double value);
     void printVars() const;
     void clear();
+    std::string printTokens(vector<Token> tokens);
+	std::string formatNumber(long double value);
 };
 
 #endif //CALCULATOR_H

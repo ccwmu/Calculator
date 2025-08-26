@@ -16,7 +16,7 @@ using namespace std;
 
 
 
-Parser::Parser(std::vector<Token> tokens) : tokens(std::move(tokens)), currIndex(0), assignment(false) {}
+Parser::Parser(std::vector<Token> tokens) : tokens(std::move(tokens)), currIndex(0) {}
 
 Token& Parser::prev() {
     if (currIndex > 0) { return tokens[--currIndex]; }
@@ -48,13 +48,15 @@ unique_ptr<Node> Parser::parseExpression(){
 }
 
 unique_ptr<Node> Parser::parseAssignment() {
-    if (currIndex + 1 < tokens.size() &&
-        tokens[currIndex].type == TokenType::VARIABLE &&
-        tokens[currIndex + 1].type == TokenType::ASSIGN) {
-        assignment = true;
-        assignmentVar = tokens[currIndex].value;
-        currIndex += 2;
-        return parseAddition();
+    if (Parser::isAssignment()) {
+        if (currIndex + 1 < tokens.size() &&
+            tokens[currIndex].type == TokenType::VARIABLE &&
+            tokens[currIndex + 1].type == TokenType::ASSIGN) {
+            assignmentVar = tokens[currIndex].value;
+            currIndex += 2;
+            return parseAddition();
+        }
+        else { throw runtime_error("use [variable] = [expression] for assignment"); }
     }
     return parseAddition();
 }

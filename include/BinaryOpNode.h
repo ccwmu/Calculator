@@ -146,20 +146,37 @@ public:
  */
 class DivideNode : public Node {
 private:
-    unique_ptr<Node> numerator;
-    unique_ptr<Node> denominator;
+	unique_ptr<Node> numerator;   /// < Numerator operand
+	unique_ptr<Node> denominator; /// < Denominator operand
 
 public:
+
+    /**
+     * @brief Construct a new DivideNode
+     * @param left Numerator operand
+     * @param right Denominator operand
+	 */ 
     DivideNode(unique_ptr<Node> left, unique_ptr<Node> right)
         : numerator(move(left)), denominator(move(right)) {}
 
+	/**
+	* @brief Evaluate the division operation
+	* @param variables Map of variable names to values
+	* @return Quotient of numerator and denominator nodes
+	* @throws runtime_error if division by zero occurs
+    */ 
     long double evaluate(const map<string, long double>& variables) const override {
         long double denom = denominator->evaluate(variables);
         if (denom == 0) {
-            throw runtime_error("Division by zero error");
+            throw runtime_error("division by zero");
         }
         return numerator->evaluate(variables) / denom;
     }
+
+    /**
+    * @brief Creates a deep copy of the node
+	* @return Pointer to a cloned new DivideNode
+    */
     Node* clone() const override {
         return new DivideNode(unique_ptr<Node>(numerator->clone()), unique_ptr<Node>(denominator->clone()));
     }
@@ -190,6 +207,7 @@ public:
      * @brief Evaluate the power operation
      * @param variables Map of variable names to values
      * @return Result of raising the base to the exponent
+	 * @throws runtime_error if base is negative and exponent is non-integer
      */
     long double evaluate(const map<string, long double>& variables) const override {
         if (base->evaluate(variables) < 0 && exponent->evaluate(variables) != floor(exponent->evaluate(variables))) {
