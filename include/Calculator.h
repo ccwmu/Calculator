@@ -17,6 +17,7 @@
 #include "Node.h"
 #include "Lexicography.h"
 #include <stdexcept>
+#include <set>
 
 using namespace std;
 
@@ -32,11 +33,8 @@ class Calculator{
 private:
 	map<string, long double> variables; ///< Map of variable names to their values
 	map<string, unique_ptr<Node>> varNodes; ///< Map of variable names to their corresponding AST nodes
-	map<string, long double> preservedValues = {  ///< Predefined constants
-		{"pi", 3.141592653589793},
-		{"e", 2.718281828459045},
-		{"deg2rad", 3.141592653589793 / 180},
-		{"rad2deg", 180 / 3.141592653589793}
+	set<string> preservedValues = {  ///< Predefined constants
+		"pi", "e", "deg2rad", "rad2deg"
 	};
 
 public:
@@ -86,7 +84,7 @@ public:
 	* @brief Clears all user-defined variables while preserving predefined constants
 	* @param toPreserve A map of variable names to values to preserve
 	*/ 
-    void clear(map<string, long double> toPreserve);
+    void clear();
 
 	/**
 	* @brief Formats a list of tokens into a human-readable and spaced string
@@ -106,7 +104,19 @@ public:
 	 * @brief Gets the map of preserved variable names to values
 	 * @return The map of preserved variable names to values
 	 */
-	map<string, long double> getPreservedValues() const { return preservedValues; }
+	set<string> getPreservedValues() const { return preservedValues; }
+
+	/**
+	 * @brief Adds a variable name to the list of preserved variables
+	 * @param name The name of the var to preserve
+	*/
+	void addPreservedValue(const string& name);
+
+	/**
+	 * @brief Removes a variable name from the list of preserved variables
+	 * @param name The name of the var to remove from preserved list
+	*/
+	void removePreservedValue(const string& name);
 
 };
 

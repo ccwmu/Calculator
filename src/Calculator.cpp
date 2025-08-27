@@ -10,6 +10,11 @@ Calculator::Calculator() {
 	assign("e", 2.718281828459045);
 	assign("deg2rad", 3.141592653589793 / 180);
 	assign("rad2deg", 180 / 3.141592653589793);
+
+    addPreservedValue("pi");
+    addPreservedValue("e");
+    addPreservedValue("deg2rad");
+    addPreservedValue("rad2deg");
 }
 
 long double Calculator::evaluate(unique_ptr<Node> expression) {
@@ -39,11 +44,20 @@ void Calculator::printVars() const {
     }
 }
 
-void Calculator::clear(std::map<std::string, long double> toPreserve) {
+void Calculator::clear() {
+	map<string, long double> preservedVars;
+    for (const auto& name : preservedValues) {
+        auto it = variables.find(name);
+        if (it != variables.end()) {
+            preservedVars[name] = it->second;
+        }
+    }
+	
     variables.clear();
     varNodes.clear();
-    for (const auto& pair : toPreserve) {
-        assign(pair.first, pair.second);
+
+    for (const auto& pair : preservedVars) {
+		assign(pair.first, pair.second);
     }
 }
 
@@ -56,6 +70,18 @@ std::string Calculator::formatNumber(long double value) {
         str.pop_back();
     }
     return str;
+}
+
+
+void Calculator::addPreservedValue(const std::string& name) {
+    if (variables.find(name) == variables.end()) {
+		throw std::runtime_error("variable " + name + " does not exist and cannot be preserved.");
+	}
+	preservedValues.insert(name);
+}
+
+void Calculator::removePreservedValue(const std::string& name) {
+    preservedValues.erase(name);
 }
 
 std::string Calculator::printTokens(std::vector<Token> tokens)

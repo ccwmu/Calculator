@@ -207,3 +207,25 @@ unique_ptr<Node> Parser::parsePrimary() {
     throw runtime_error("unexpected element in expression");
 
 }
+
+bool Parser::parsePreserve() {
+    if (tokens.size() == 3 && tokens[0].type == TokenType::PRESERVE && tokens[1].type == TokenType::VARIABLE) {
+		assignmentVar = tokens[1].value;
+        return true;
+    }
+    else if (any_of(tokens.begin(), tokens.end(), [](const Token& t) { return t.type == TokenType::PRESERVE; })) {
+        throw runtime_error("invalid preserve variable syntax! Use remove [variable] to remove a variable from preserved variables");
+    }
+    return false;
+}
+
+bool Parser::parseRemove() {
+    if (tokens.size() == 3 && tokens[0].type == TokenType::REMOVE && tokens[1].type == TokenType::VARIABLE) {
+		assignmentVar = tokens[1].value;
+        return true;
+    }
+    else if (any_of(tokens.begin(), tokens.end(), [](const Token& t) { return t.type == TokenType::REMOVE; })) {
+        throw runtime_error("invalid remove variable syntax! Use remove [variable] to remove a variable from preserved variables");
+    }
+    return false;
+}

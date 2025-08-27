@@ -4,12 +4,15 @@
 #include "Node.h"
 #include <memory>
 #include <vector>
+#include <algorithm>
+#include <stdexcept>
 
 using namespace std;
 
 class Parser {
 private:
-    vector<Token> tokens;
+
+    vector<Token> tokens; ///< 
     size_t currIndex;
     bool containsNewVar = false;
     string assignmentVar;
@@ -41,7 +44,8 @@ public:
     }
     string getAssignVar() const { return assignmentVar; }
 
-
+    bool parsePreserve();
+    bool parseRemove();
 
 };
 

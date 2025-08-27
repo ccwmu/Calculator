@@ -19,7 +19,9 @@ enum class TokenType {
     ASSIGN, 
     COMMA, 
     ABS,
-    END
+    END, 
+    PRESERVE, 
+    REMOVE
 };
 
 struct Token {

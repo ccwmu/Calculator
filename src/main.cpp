@@ -49,6 +49,8 @@ const string HELP_MESSAGE =
     "  help                Show this help message\n"
     "  vars                Display all variables\n"
     "  clear               Clear all variables\n"
+	"  preserve [var]     Preserve variable when clearing (e.g. preserve x)\n"
+	"  remove [var]       Remove variable from preserved list (e.g. remove x)\n"
     "  exit                Quit calculator\n"
     "\n"
     "PREDEFINED VARIABLES: \n"
@@ -73,7 +75,7 @@ int main() {
         if (input == "exit" || input == "quit") break;
         if (input == "help") { cout << HELP_MESSAGE << endl; continue; }
         if (input == "vars") { calc.printVars(); continue; }
-        if (input == "clear") { calc.clear(calc.getPreservedValues()); cout << "Variables cleared." << endl; continue; }
+        if (input == "clear") { calc.clear(); cout << "Variables cleared." << endl; continue; }
         // Process input
         try {
             vector<Token> tokens = tokenize(input);
@@ -83,8 +85,21 @@ int main() {
             //}
             //cout << endl;
             Parser parser(tokens);
+
+            if (parser.parsePreserve()) {
+				calc.addPreservedValue(parser.getAssignVar());
+				cout << "Variable " << parser.getAssignVar() << " has been preserved." << endl;
+                continue;
+            }
+
+            if (parser.parseRemove()) {
+				calc.removePreservedValue(parser.getAssignVar());
+				cout << "Variable " << parser.getAssignVar() << " has been removed from preserved variables." << endl;
+                continue;
+            }
+
             unique_ptr<Node> expression = parser.parse();
-            
+
             if (parser.isAssignment()) {
                 //cout << "variable" << endl;
                 string varName = parser.getAssignVar();
@@ -93,7 +108,7 @@ int main() {
 
 				//cout << "varName: " << varName << endl;
 				//cout << "result: " << result << endl;
-                //cout << varName << " = " << result << endl;
+                cout << varName << " = " << result << endl;
             } 
             else {
 				//cout << "expression" << endl;

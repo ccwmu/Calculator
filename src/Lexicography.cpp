@@ -42,9 +42,9 @@ vector<Token> tokenize(const string& input) {
             ){
                 tokens.emplace_back(TokenType::FUNCTION, word);
             }
-            else {
-                tokens.emplace_back(TokenType::VARIABLE, word);
-            }
+            else if (word == "preserve") { tokens.emplace_back(TokenType::PRESERVE, word); }
+            else if (word == "remove") { tokens.emplace_back(TokenType::REMOVE, word); }
+            else { tokens.emplace_back(TokenType::VARIABLE, word); }
         }
         else { // parse operators and punctuation, and throw runtime error when not recognized
             switch (c) {
