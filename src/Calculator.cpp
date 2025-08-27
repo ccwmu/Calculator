@@ -5,6 +5,11 @@
 Calculator::Calculator() {
     variables = map<string, long double>();
     varNodes = map<string, unique_ptr<Node>>();
+    // Predefined variables
+	assign("pi", 3.141592653589793);
+	assign("e", 2.718281828459045);
+	assign("deg2rad", 3.141592653589793 / 180);
+	assign("rad2deg", 180 / 3.141592653589793);
 }
 
 long double Calculator::evaluate(unique_ptr<Node> expression) {
@@ -34,16 +39,10 @@ void Calculator::printVars() const {
     }
 }
 
-void Calculator::clear() {
-    std::map<std::string, long double> preserverValues = {
-        {"pi", 3.141592653589793},
-        {"e", 2.718281828459045},
-        {"deg2rad", 3.141592653589793 / 180},
-        {"rad2deg", 180 / 3.141592653589793}
-    };
+void Calculator::clear(std::map<std::string, long double> toPreserve) {
     variables.clear();
     varNodes.clear();
-    for (const auto& pair : preserverValues) {
+    for (const auto& pair : toPreserve) {
         assign(pair.first, pair.second);
     }
 }

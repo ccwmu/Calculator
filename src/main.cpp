@@ -36,13 +36,13 @@ const string HELP_MESSAGE =
     "  abs(x)              Absolute value\n"
     "\n"
     "EXAMPLES:\n"
-    "  >>> 2 + 3 * 4\n"
+    "  > 2 + 3 * 4\n"
     "  2 + 3 * 4 = 14\n"
-    "  >>> x = 5\n"
+    "  > x = 5\n"
     "  x = 5\n"
-    "  >>> sin(3.14159/2)\n"
+    "  > sin(3.14159/2)\n"
     "  sin(3.14159/2) = 1\n"
-    "  >>> area = 3.14159 * 5^2\n"
+    "  > area = 3.14159 * 5^2\n"
     "  area = 78.5398\n"
     "\n"
     "COMMANDS:\n"
@@ -66,12 +66,6 @@ int main() {
     cout << "Calculator (in development)" << endl;
     cout << "Type 'help' for assistance." << endl;
 
-    calc.assign("pi", 3.141592653589793);
-    calc.assign("e", 2.718281828459045);
-    calc.assign("deg2rad", 3.141592653589793 / 180);
-    calc.assign("rad2deg", 180 / 3.141592653589793);
-
-
     while (true) {
         cout << "> ";
         getline(cin, input);
@@ -88,7 +82,7 @@ int main() {
             //    cout << "[" << static_cast<int>(token.type) << ", " << token.value << "], ";
             //}
             //cout << endl;
-            //Parser parser(tokens);
+            Parser parser(tokens);
             unique_ptr<Node> expression = parser.parse();
             
             if (parser.isAssignment()) {
@@ -99,7 +93,7 @@ int main() {
 
 				//cout << "varName: " << varName << endl;
 				//cout << "result: " << result << endl;
-    //            cout << varName << " = " << result << endl;
+                //cout << varName << " = " << result << endl;
             } 
             else {
 				//cout << "expression" << endl;

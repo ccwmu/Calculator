@@ -2,7 +2,7 @@
  * @file BinaryOpNode.h
  * @brief Binary operation nodes for the AST
  * @author Ethan Ye
- * @date 2025-8-20
+ * @date 2025-8-18
  * 
  * This header defines all binary (two-operand) mathematical operation
  * nodes for the AST. Operations are addition, subtraction, multiplication,
@@ -27,8 +27,8 @@ using namespace std;
 
 class AddNode : public Node {
 private: 
-    unique_ptr<Node> child1; /// < Left operand
-    unique_ptr<Node> child2; /// < Right operand
+    unique_ptr<Node> child1; ///< Left operand
+    unique_ptr<Node> child2; ///< Right operand
 
 public: 
 
@@ -107,8 +107,8 @@ public:
  */
 class MultiplyNode : public Node {
 private:
-    unique_ptr<Node> child1; /// < Left operand
-    unique_ptr<Node> child2; /// < Right operand
+    unique_ptr<Node> child1; ///< Left operand
+    unique_ptr<Node> child2; ///< Right operand
 
 public:
 
@@ -146,8 +146,8 @@ public:
  */
 class DivideNode : public Node {
 private:
-	unique_ptr<Node> numerator;   /// < Numerator operand
-	unique_ptr<Node> denominator; /// < Denominator operand
+	unique_ptr<Node> numerator;   ///< Numerator operand
+	unique_ptr<Node> denominator; ///< Denominator operand
 
 public:
 
@@ -190,8 +190,8 @@ public:
  */
 class PowerNode : public Node {
 private:
-    unique_ptr<Node> base;      /// < Base operand
-    unique_ptr<Node> exponent;  /// < Exponent operand
+    unique_ptr<Node> base;      ///< Base operand
+    unique_ptr<Node> exponent;  ///< Exponent operand
 
 public:
 
