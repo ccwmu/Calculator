@@ -101,6 +101,13 @@ public:
 	* @return A string representation of the number without trailing zeros.
 	*/ 
 	string formatNumber(long double value);
+
+	/**
+	 * @brief Gets the map of preserved variable names to values
+	 * @return The map of preserved variable names to values
+	 */
+	map<string, long double> getPreservedValues() const { return preservedValues; }
+
 };
 
 #endif //CALCULATOR_H

@@ -73,7 +73,7 @@ int main() {
         if (input == "exit" || input == "quit") break;
         if (input == "help") { cout << HELP_MESSAGE << endl; continue; }
         if (input == "vars") { calc.printVars(); continue; }
-        if (input == "clear") { calc.clear(); cout << "Variables cleared." << endl; continue; }
+        if (input == "clear") { calc.clear(calc.getPreservedValues()); cout << "Variables cleared." << endl; continue; }
         // Process input
         try {
             vector<Token> tokens = tokenize(input);
@@ -86,7 +86,7 @@ int main() {
             unique_ptr<Node> expression = parser.parse();
             
             if (parser.isAssignment()) {
-                cout << "variable" << endl;
+                //cout << "variable" << endl;
                 string varName = parser.getAssignVar();
                 long double result = calc.evaluate(move(expression));
                 calc.assign(varName, result);
