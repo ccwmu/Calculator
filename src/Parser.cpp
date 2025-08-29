@@ -1,3 +1,15 @@
+/**
+ * @file Parser.cpp
+ * @brief Implementation of parser class
+ * @author Ethan Ye
+ * @date 2025-8-19
+*/
+
+/*
+This file uses recursive descent parsing to implement a heirarchical parsing structure. 
+It uses a top-down approach to parse dynamic arrays of tokens into an AST that will return the 
+final result of the expression. 
+*/
 #include "Parser.h"
 #include "NumberNode.h"
 #include "BinaryOpNode.h"
@@ -13,105 +25,113 @@
 
 using namespace std;
 
-
-
-
+// Constructur, initializes tokens and current index to 0
 Parser::Parser(std::vector<Token> tokens) : tokens(std::move(tokens)), currIndex(0) {}
 
+// Helper functions to navigate tokens
+
+// Increments to previous token if possible and return it, otherwise return current token
 Token& Parser::prev() {
     if (currIndex > 0) { return tokens[--currIndex]; }
     else { return tokens[currIndex]; }
 }
+
+// Returns current token
 Token& Parser::curr() {
     return tokens[currIndex];
 }
 
+// Increments to next token if possible and return it, otherwise return current token
 Token& Parser::next() {
     if (currIndex < tokens.size()-1) { return tokens[++currIndex]; }
     else { return tokens[currIndex]; }
 }
 
+// Checks if current token matches given type
 bool Parser::checkType(TokenType type) {
     return curr().type == type;
 }
 
+// Checks if next token matches given type
 bool Parser::checkNext(TokenType type){
     return next().type == type;
 }
 
+// Public parse function, serves as entry point for main
 unique_ptr<Node> Parser::parse(){
     return parseExpression();
 }
 
+// Begin private parsing functions
+
+// Entry point for parsing expressions
 unique_ptr<Node> Parser::parseExpression(){
     return parseAssignment();
 }
 
+// Parses assignment expressions of the form variable = expression
 unique_ptr<Node> Parser::parseAssignment() {
-    if (Parser::isAssignment()) {
-        if (currIndex + 1 < tokens.size() &&
+    if (Parser::isAssignment()) { 
+        if (currIndex + 1 < tokens.size() &&                   // Ensure that input follows correct assignment syntax
             tokens[currIndex].type == TokenType::VARIABLE &&
-            tokens[currIndex + 1].type == TokenType::ASSIGN) {
+            tokens[currIndex + 1].type == TokenType::ASSIGN) { 
             assignmentVar = tokens[currIndex].value;
             currIndex += 2;
-            return parseAddition();
+            return parseAddition(); // Parse the expression on the right side of the assignment, which can include all other types of expressions
         }
-        else { throw runtime_error("use [variable] = [expression] for assignment"); }
+        else { throw runtime_error("use [variable] = [expression] for assignment"); } // invalid assignment syntax
     }
-    return parseAddition();
+    return parseAddition(); // if there is no assignment, then continue parsing.
 }
 
-unique_ptr<Node> Parser::parseAddition() {
-    unique_ptr<Node> left = parseMultiplication();
-    while (checkType(TokenType::PLUS) || checkType(TokenType::MINUS)) {
-        TokenType op = curr().type;
-        next();
-        unique_ptr<Node> right = parseMultiplication();
+unique_ptr<Node> Parser::parseAddition() { 
+    unique_ptr<Node> left = parseMultiplication(); // continue parsing left side
+    while (checkType(TokenType::PLUS) || checkType(TokenType::MINUS)) { // if there is a minus or a plus
+		TokenType op = curr().type; // plus/minus operator
+        next(); // move to next token
+        unique_ptr<Node> right = parseMultiplication(); // parse right side
 
         // left = (op == TokenType::PLUS) ? 
         //     make_unique<AddNode>(move(left), move(right)) : 
         //     make_unique<SubtractNode>(move(left), move(right));
-        if (op == TokenType::PLUS) { left = make_unique<AddNode>(move(left), move(right)); }
-        else { left = make_unique<SubtractNode>(move(left), move(right)); }
+        if (op == TokenType::PLUS) { left = make_unique<AddNode>(move(left), move(right)); } // make addition node from the left and right sides of the operator
+		else { left = make_unique<SubtractNode>(move(left), move(right)); } // make subtraction node from the left and right sides of the operator
 
     }
-    return left;
+    return left; // return the left side which now contains the rest of the expression tree
 }
 
 unique_ptr<Node> Parser::parseMultiplication() {
-    unique_ptr<Node> left = parsePower();
-    while (checkType(TokenType::MULTIPLY) || checkType(TokenType::DIVIDE)) {
-        TokenType op = curr().type;
-        next();
-        unique_ptr<Node> right = parsePower();
+    unique_ptr<Node> left = parsePower(); // continue parsing left side
+	while (checkType(TokenType::MULTIPLY) || checkType(TokenType::DIVIDE)) { // if there is a multiply or divide
+		TokenType op = curr().type; // multiply/divide operator
+		next(); // move to next token
+        unique_ptr<Node> right = parsePower(); // continue parse right side
 
         // left = (op == TokenType::MULTIPLY) ? 
         //     make_unique<MultiplyNode>(move(left), move(right)) : 
         //     make_unique<DivideNode>(move(left), move(right));
 
-        if (op == TokenType::MULTIPLY) { left = make_unique<MultiplyNode>(move(left), move(right)); } 
-        else { left = make_unique<DivideNode>(move(left), move(right)); }
+		if (op == TokenType::MULTIPLY) { left = make_unique<MultiplyNode>(move(left), move(right)); } // make multiplication node from the left and right sides of the operator
+		else { left = make_unique<DivideNode>(move(left), move(right)); } // make division node from the left and right sides of the operator
 
     }
     return left;
 }
 
-unique_ptr<Node> Parser::parsePower() {
-    unique_ptr<Node> left = parseUnary();
-    if (checkType(TokenType::POWER)) {
+unique_ptr<Node> Parser::parsePower() { // right associative
+	unique_ptr<Node> left = parseUnary(); // continue parsing left side 
+    if (checkType(TokenType::POWER)) { 
         next();
-        unique_ptr<Node> right = parsePower();
+        unique_ptr<Node> right = parsePower(); // parse right side (right-associative)
 
-        return make_unique<PowerNode>(move(left), move(right));
+        return make_unique<PowerNode>(move(left), move(right)); // make power node from left and right sides
     }
     return left;
 }
 
 unique_ptr<Node> Parser::parseUnary() {
-    if (checkType(TokenType::PLUS)) {
-        next();
-        return parseUnary();
-    } else if (checkType(TokenType::MINUS)) {
+    if (checkType(TokenType::MINUS)) {
         next();
         return make_unique<NegateNode>(parseUnary());
     }
