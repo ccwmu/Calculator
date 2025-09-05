@@ -90,4 +90,43 @@ public:
     }
 };
 
+class FactorialNode : public Node {
+private: 
+    unique_ptr<Node> child; ///< Operand
+
+public:
+
+    /**
+     * @brief Consruct a new FactorialNode
+	 * @param operand Operand to take factorial of
+    */
+    FactorialNode(unique_ptr<Node> operand) : child(move(operand)) {}
+
+    /**
+     * @brief Evaluate the factorial operation
+     * @param variables Map of variable names to values
+     * @return Factorial of value of chile node
+     * @throws runtime_error if child evaluates to negative number
+    */
+    long double evaluate(const map<string, long double>& variables) const override {
+
+        if (child->evaluate(variables) < 0) { throw runtime_error("cannot take factorial of negative number"); }
+
+        long double result = 1;
+        for (int i = 1; i <= static_cast<int>(child->evaluate(variables)); ++i) {
+            result *= i;
+		}
+
+        return result;
+    }
+
+    /**
+     * @brief Creates a deep copy of the node
+     * @return Pointer to a new cloned FactorialNode
+    */
+    Node* clone() const override {
+		return new FactorialNode(unique_ptr<Node>(child->clone()));
+    }
+};
+
 #endif // UNARYOPNODE_H

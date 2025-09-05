@@ -8,7 +8,40 @@
 /*
 This file uses recursive descent parsing to implement a heirarchical parsing structure. 
 It uses a top-down approach to parse dynamic arrays of tokens into an AST that will return the 
-final result of the expression. 
+final result of the expression. It uses a series of parsing functions, each calling one that 
+takes more priority over itself, enabling clean order of operations. 
+
+Flow:
+1. Start assignment operators (if no assignment, then continue to step 2)
+    - if there is an assignment operator, parse the right-hand side expression (variable assignment happens in main loop)
+2. Parse addition/subtraction
+    - continue parsing the left side of the operator by parsing multiplication
+    - since later functions don't parse addition/subtraction, they will stop parsing at the + or - token and return a tree, which is when the right side starts
+    - then parse the right side
+    - if right side contains another addition/subtraction, the now parsed expression before the + or - token will be used as the left side
+3. Parse multiplication/division
+    - continue parsing the left side of the operator by parsing power
+    - like addition, parsing will stop at a * or / token and return a tree, which is when right side starts
+    - then parse the right side, and like addition/subtraction, the right and left side combined together will serve as the left side if another * or / token is found
+4. Parse power
+    - this case is special. since power is right associative unlike addition/multiplication, we need to parse the right side first
+    - however, we will still continue to parse the left side, which might contain parenthesis, unary operators, or functions
+    - then we parse the right side as another power expression, for cases like 2^(3+1)^4. This ensures that (3+1)^4 is parsed first, then 2^[(3+1)^4].
+    - once no more ^ tokens are found, then continue parsing
+5. Parse unary
+    - not special, just trying to find a - token before a number, variable, or parenthesis
+    - if found, create a negate node with the parsed unary expression as its child
+6. Parse primary
+	- this is the case that takes the most heirarchy. It includes numbers, variables, functions, and grouping operators: (x) and |x|
+    - it uses checkType() to determine what the current token is and parse accordingly
+    - simplest case: number or variable
+    - an absolute value operator | is treated like a function, where we parse the expression inside and expect another | to close it.
+        - if | not found then throw runtime error
+    - if function token is found then expect a left parenthesis
+        - if function is a log, parse expression then expect a comma, if not then throw runtime error
+        - if function is not a log, parse expression 
+        - 
+
 */
 #include "Parser.h"
 #include "NumberNode.h"
@@ -123,7 +156,7 @@ unique_ptr<Node> Parser::parsePower() { // right associative
 	unique_ptr<Node> left = parseUnary(); // continue parsing left side 
     if (checkType(TokenType::POWER)) { 
         next();
-        unique_ptr<Node> right = parsePower(); // parse right side (right-associative)
+        unique_ptr<Node> right = parseUnary(); // parse right side (right-associative)
 
         return make_unique<PowerNode>(move(left), move(right)); // make power node from left and right sides
     }
@@ -131,11 +164,11 @@ unique_ptr<Node> Parser::parsePower() { // right associative
 }
 
 unique_ptr<Node> Parser::parseUnary() {
-    if (checkType(TokenType::MINUS)) {
+    if (checkType(TokenType::MINUS)) { 
         next();
-        return make_unique<NegateNode>(parseUnary());
+		return make_unique<NegateNode>(parseUnary()); // make negate node with the expression after as its child; call parseUnary again to handle cases like --sin(x)
     }
-    return parsePrimary();
+    return parsePrimary(); // continue parsing the rest of the expression
 }
 
 unique_ptr<Node> Parser::parsePrimary() {
