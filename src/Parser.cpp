@@ -6,7 +6,7 @@
 */
 
 /*
-This file uses recursive descent parsing to implement a heirarchical parsing structure. 
+This file uses recursive descent parsing to implement a hierarchical parsing structure.
 It uses a top-down approach to parse dynamic arrays of tokens into an AST that will return the 
 final result of the expression. It uses a series of parsing functions, each calling one that 
 takes more priority over itself, enabling clean order of operations. 
@@ -55,6 +55,7 @@ Flow:
 #include <memory>
 #include <cmath>
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -266,7 +267,7 @@ bool Parser::parsePreserve() {
 		assignmentVar = tokens[1].value;
         return true;
     }
-    else if (any_of(tokens.begin(), tokens.end(), [](const Token& t) { return t.type == TokenType::PRESERVE; })) {
+    else if (std::any_of(tokens.begin(), tokens.end(), [](const Token& t) { return t.type == TokenType::PRESERVE; })) {
         throw runtime_error("invalid preserve variable syntax! Use remove [variable] to remove a variable from preserved variables");
     }
     return false;
@@ -277,7 +278,7 @@ bool Parser::parseRemove() {
 		assignmentVar = tokens[1].value;
         return true;
     }
-    else if (any_of(tokens.begin(), tokens.end(), [](const Token& t) { return t.type == TokenType::REMOVE; })) {
+    else if (std::any_of(tokens.begin(), tokens.end(), [](const Token& t) { return t.type == TokenType::REMOVE; })) {
         throw runtime_error("invalid remove variable syntax! Use remove [variable] to remove a variable from preserved variables");
     }
     return false;

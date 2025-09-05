@@ -3,7 +3,6 @@
 
 #include "Node.h"
 #include <vector>
-using namespace std;
 
 enum class TokenType {
     NUMBER, 
@@ -26,11 +25,11 @@ enum class TokenType {
 
 struct Token {
     TokenType type;
-    string value;
+    std::string value;
 
-    Token(TokenType type, const string& value) : type(type), value(value) {}
+    Token(TokenType type, const std::string& value) : type(type), value(value) {}
 };
 
-vector<Token> tokenize(const string& input);
+std::vector<Token> tokenize(const std::string& input);
 
 #endif //LEXICOGRAPHY_H

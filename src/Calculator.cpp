@@ -3,8 +3,8 @@
 #include <iostream>
 
 Calculator::Calculator() {
-    variables = map<string, long double>();
-    varNodes = map<string, unique_ptr<Node>>();
+    variables = std::map<std::string, long double>();
+    varNodes = std::map<std::string, std::unique_ptr<Node>>();
     // Predefined variables
 	assign("pi", 3.141592653589793);
 	assign("e", 2.718281828459045);
@@ -17,35 +17,35 @@ Calculator::Calculator() {
     addPreservedValue("rad2deg");
 }
 
-long double Calculator::evaluate(unique_ptr<Node> expression) {
+long double Calculator::evaluate(std::unique_ptr<Node> expression) {
     return expression->evaluate(variables);
 }
 
-void Calculator::assign(const string& name, long double value) {
+void Calculator::assign(const std::string& name, long double value) {
     variables[name] = value;
-    varNodes[name] = make_unique<VariableNode>(name);
+    varNodes[name] = std::make_unique<VariableNode>(name);
 }
 
-unique_ptr<Node> Calculator::getVariable(const string& name)  {
+std::unique_ptr<Node> Calculator::getVariable(const std::string& name)  {
     auto thing = varNodes.find(name);
     if (thing != varNodes.end()) {
-        return unique_ptr<Node>(thing->second->clone());
+        return std::unique_ptr<Node>(thing->second->clone());
     }
-    throw runtime_error("variable not found");
+    throw std::runtime_error("variable not found");
 }
 
-void Calculator::setVariable(const string& name, long double value) {
+void Calculator::setVariable(const std::string& name, long double value) {
     variables[name] = value;
 }
 
 void Calculator::printVars() const {
     for (const auto& pair : variables) {
-        cout << pair.first << " = " << pair.second << endl;
+        std::cout << pair.first << " = " << pair.second << std::endl;
     }
 }
 
 void Calculator::clear() {
-	map<string, long double> preservedVars;
+	std::map<std::string, long double> preservedVars;
     for (const auto& name : preservedValues) {
         auto it = variables.find(name);
         if (it != variables.end()) {

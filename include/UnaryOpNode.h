@@ -13,7 +13,9 @@
 
 #include "Node.h"
 
-using namespace std;
+#include <memory>
+#include <map>
+#include <string>
 
 /**
  * @class NegateNode
@@ -24,7 +26,7 @@ using namespace std;
 
 class NegateNode : public Node {
 private: 
-    unique_ptr<Node> child; ///<Operand
+    std::unique_ptr<Node> child; ///<Operand
 
 public:
 
@@ -32,15 +34,15 @@ public:
      * @brief Construct a new NegateNode
      * @param operand Operand to negate
 	 */
-    NegateNode(unique_ptr<Node> operand)
-        : child(move(operand)) {}
+    NegateNode(std::unique_ptr<Node> operand)
+        : child(std::move(operand)) {}
 
 	/**
     * @brief Evaluate the negation operation
-	* @param variables Map of variable names to values
+	* @param variables std::map of variable names to values
 	* @return Negated value of child node
     */ 
-    long double evaluate(const map<string, long double>& variables) const override {
+    long double evaluate(const std::map<std::string, long double>& variables) const override {
         return -child->evaluate(variables);
     }
 
@@ -49,7 +51,7 @@ public:
 	* @return Pointer to a cloned new NegateNode
     */ 
     Node* clone() const override {
-        return new NegateNode(unique_ptr<Node>(child->clone()));
+        return new NegateNode(std::unique_ptr<Node>(child->clone()));
     }
 };
 
@@ -62,7 +64,7 @@ public:
 
 class AbsNode : public Node {
 private:
-	unique_ptr<Node> child; ///< Operand
+	std::unique_ptr<Node> child; ///< Operand
 
 public: 
 
@@ -70,14 +72,14 @@ public:
      * @brief Construct a new AbsNode
 	 * @param operand Operand to take absolute value of
     */
-    AbsNode(unique_ptr<Node> operand) : child(move(operand)) {}
+    AbsNode(std::unique_ptr<Node> operand) : child(std::move(operand)) {}
 
     /**
 	* @brief Evaluate the absolute value operation
-	* @param variables Map of variable names to values 
+	* @param variables std::map of variable names to values 
 	* @return Absolute value of child node
     */
-    long double evaluate(const map<string, long double>& variables) const override {
+    long double evaluate(const std::map<std::string, long double>& variables) const override {
         return abs(child->evaluate(variables));
     }
 
@@ -86,13 +88,13 @@ public:
 	* @return Pointer to a cloned new AbsNode
     */
     Node* clone() const override {
-        return new AbsNode(unique_ptr<Node>(child->clone()));
+        return new AbsNode(std::unique_ptr<Node>(child->clone()));
     }
 };
 
 class FactorialNode : public Node {
 private: 
-    unique_ptr<Node> child; ///< Operand
+    std::unique_ptr<Node> child; ///< Operand
 
 public:
 
@@ -100,17 +102,17 @@ public:
      * @brief Consruct a new FactorialNode
 	 * @param operand Operand to take factorial of
     */
-    FactorialNode(unique_ptr<Node> operand) : child(move(operand)) {}
+    FactorialNode(std::unique_ptr<Node> operand) : child(std::move(operand)) {}
 
     /**
      * @brief Evaluate the factorial operation
-     * @param variables Map of variable names to values
+     * @param variables std::map of variable names to values
      * @return Factorial of value of chile node
      * @throws runtime_error if child evaluates to negative number
     */
-    long double evaluate(const map<string, long double>& variables) const override {
+    long double evaluate(const std::map<std::string, long double>& variables) const override {
 
-        if (child->evaluate(variables) < 0) { throw runtime_error("cannot take factorial of negative number"); }
+        if (child->evaluate(variables) < 0) { throw std::runtime_error("cannot take factorial of negative number"); }
 
         long double result = 1;
         for (int i = 1; i <= static_cast<int>(child->evaluate(variables)); ++i) {
@@ -125,7 +127,7 @@ public:
      * @return Pointer to a new cloned FactorialNode
     */
     Node* clone() const override {
-		return new FactorialNode(unique_ptr<Node>(child->clone()));
+		return new FactorialNode(std::unique_ptr<Node>(child->clone()));
     }
 };
 

@@ -3,13 +3,13 @@
 #include <cctype>
 #include <stdexcept>
 
-vector<Token> tokenize(const string& input) {
-    vector<Token> tokens;
+std::vector<Token> tokenize(const std::string& input) {
+    std::vector<Token> tokens;
     for (size_t i = 0; i < input.size(); ++i) {
         char c = input[i];
         if (isspace(c)) { continue; }// skip whitespace
         if (isdigit(c) || c == '.'){ // parse number, including . 
-            string num;
+            std::string num;
             while (isdigit(c) || c == '.') {
                 num += c;
                 c = input[++i];
@@ -19,7 +19,7 @@ vector<Token> tokenize(const string& input) {
         }
 
         else if (isalpha(c)){ //parse variable or function
-            string word;
+            std::string word;
             while (isalpha(c) || isdigit(c) || c == '_') {
                 word += c;
                 c = input[++i];
@@ -58,7 +58,7 @@ vector<Token> tokenize(const string& input) {
                 case '=': tokens.emplace_back(TokenType::ASSIGN, "="); break;
                 case ',': tokens.emplace_back(TokenType::COMMA, ","); break;
                 case '|': tokens.emplace_back(TokenType::ABS, "|"); break;
-                default: throw runtime_error(string(1, c) + " is not recognized as a variable, function, or operation");
+                default: throw std::runtime_error(std::string(1, c) + " is not recognized as a variable, function, or operation");
             }
         }
     }

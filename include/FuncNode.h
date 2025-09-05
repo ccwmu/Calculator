@@ -21,7 +21,6 @@
 #include <cmath>
 #include <stdexcept>
 
-//using namespace std;
 
 /**
  * @class SinNode

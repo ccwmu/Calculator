@@ -17,8 +17,9 @@
 #include "Node.h"
 #include "Lexicography.h"
 #include <set>
+#include <map>
+#include <memory>
 
-using namespace std;
 
 /**
  * @class Calculator
@@ -30,9 +31,9 @@ using namespace std;
  */ 
 class Calculator{
 private:
-	map<string, long double> variables; ///< Map of variable names to their values
-	map<string, unique_ptr<Node>> varNodes; ///< Map of variable names to their corresponding AST nodes
-	set<string> preservedValues = {  ///< Predefined constants
+	std::map<std::string, long double> variables; ///< Map of variable names to their values
+	std::map<std::string, std::unique_ptr<Node>> varNodes; ///< Map of variable names to their corresponding AST nodes
+	std::set<std::string> preservedValues = {  ///< Predefined constants
 		"pi", "e", "deg2rad", "rad2deg"
 	};
 
@@ -50,14 +51,14 @@ public:
 	* @param expression A unique pointer to the root node of the AST representing the expression
 	* @return The result of evaluating the expression as a long double
     */ 
-    long double evaluate(unique_ptr<Node> expression);
+    long double evaluate(std::unique_ptr<Node> expression);
     
 	/**
 	* @brief Assigns a value to a variable and creates its corresponding AST node
 	* @param name The name of the variable to assign
 	* @param value The value to assign to the variable
     */ 
-    void assign(const string& name, long double value);
+    void assign(const std::string& name, long double value);
 
     /**
 	* @brief Retrieves the AST node corresponding to a variable
@@ -65,14 +66,14 @@ public:
 	* @return A unique pointer to the AST node representing the variable
 	* @throws runtime_error if the variable does not exist
     */ 
-    unique_ptr<Node> getVariable(const string& name) ;
+    std::unique_ptr<Node> getVariable(const std::string& name) ;
 
 	/**
 	* @brief Updates the value of an existing variable
 	* @param name The name of the variable to update
 	* @param value The new value to assign to the variable
 	*/
-    void setVariable(const string& name, long double value);
+    void setVariable(const std::string& name, long double value);
 
 	/**
 	* @brief Prints all currently defined variables and their values to the console
@@ -90,32 +91,32 @@ public:
 	* @param tokens A vector of Token objects to format
 	* @return A formatted string representation of the tokens
 	*/ 
-    string printTokens(vector<Token> tokens);
+    std::string printTokens(std::vector<Token> tokens);
 
 	/**
 	* @brief Formats a long double into a string, removing unnecessary trailing zeros
 	* @param value The long double value to format
 	* @return A string representation of the number without trailing zeros.
 	*/ 
-	string formatNumber(long double value);
+	std::string formatNumber(long double value);
 
 	/**
 	 * @brief Gets the map of preserved variable names to values
 	 * @return The map of preserved variable names to values
 	 */
-	set<string> getPreservedValues() const { return preservedValues; }
+	std::set<std::string> getPreservedValues() const { return preservedValues; }
 
 	/**
 	 * @brief Adds a variable name to the list of preserved variables
 	 * @param name The name of the var to preserve
 	*/
-	void addPreservedValue(const string& name);
+	void addPreservedValue(const std::string& name);
 
 	/**
 	 * @brief Removes a variable name from the list of preserved variables
 	 * @param name The name of the var to remove from preserved list
 	*/
-	void removePreservedValue(const string& name);
+	void removePreservedValue(const std::string& name);
 
 };
 

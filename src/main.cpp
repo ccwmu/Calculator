@@ -1,17 +1,9 @@
 #include <iostream>
 #include "Calculator.h"
 #include "Lexicography.h"
-#include "Node.h"
-#include "FuncNode.h"
-#include "BinaryOpNode.h"
-#include "VariableNode.h"
-#include "UnaryOpNode.h"
-#include "NumberNode.h"
 #include "Parser.h"
 
-using namespace std;
-
-const string HELP_MESSAGE = 
+const std::string HELP_MESSAGE =
     "=== Calculator Help ===\n"
     "\n"
     "BASIC OPERATIONS:\n"
@@ -62,6 +54,13 @@ const string HELP_MESSAGE =
     "      Use deg2rad to convert degrees to radians.";
 
 int main() {
+
+    using std::cout;
+    using std::cin;
+    using std::endl;
+    using std::string;
+    using std::vector;
+
     Calculator calc;
     string input;
 
@@ -98,12 +97,12 @@ int main() {
                 continue;
             }
 
-            unique_ptr<Node> expression = parser.parse();
+            std::unique_ptr<Node> expression = parser.parse();
 
             if (parser.isAssignment()) {
                 //cout << "variable" << endl;
                 string varName = parser.getAssignVar();
-                long double result = calc.evaluate(move(expression));
+                long double result = calc.evaluate(std::move(expression));
                 calc.assign(varName, result);
 
 				//cout << "varName: " << varName << endl;
@@ -112,10 +111,10 @@ int main() {
             } 
             else {
 				//cout << "expression" << endl;
-                long double result = calc.evaluate(move(expression));
+                long double result = calc.evaluate(std::move(expression));
                 cout << calc.printTokens(tokens) << "= " << result << endl;
             }
-        } catch (const exception& e) {
+        } catch (const std::exception& e) {
             cout << "Error: " << e.what() << endl;
         }
     }
