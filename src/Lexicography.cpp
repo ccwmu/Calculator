@@ -1,7 +1,10 @@
 #include "Lexicography.h"
-#include <iostream>
+
 #include <cctype>
+#include <iostream>
 #include <stdexcept>
+#include <string>
+#include <vector>
 
 std::vector<Token> tokenize(const std::string& input) {
     std::vector<Token> tokens;

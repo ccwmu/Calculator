@@ -15,11 +15,12 @@
 #define FUNCNODE_H
 
 #include "Node.h"
+
+#include <cmath>
 #include <memory>
 #include <map>
-#include <string>
-#include <cmath>
 #include <stdexcept>
+#include <string>
 
 
 /**

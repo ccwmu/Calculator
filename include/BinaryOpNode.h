@@ -12,10 +12,13 @@
 #ifndef BINARYOPNODE_H
 #define BINARYOPNODE_H
 
-#include <cmath>
-#include <stdexcept>
 #include "Node.h"
 
+#include <cmath>
+#include <memory>
+#include <map>
+#include <stdexcept>
+#include <string>
 
 /**
  * @class AddNode

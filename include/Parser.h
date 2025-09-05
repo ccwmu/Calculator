@@ -4,9 +4,11 @@
 #define PARSER_H
 #include "Lexicography.h"
 #include "Node.h"
+
+
 #include <memory>
+#include <string>
 #include <vector>
-#include <stdexcept>
 
 
 class Parser {

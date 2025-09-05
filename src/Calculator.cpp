@@ -1,6 +1,13 @@
 #include "Calculator.h"
 #include "VariableNode.h"
+
 #include <iostream>
+#include <map>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
 
 Calculator::Calculator() {
     variables = std::map<std::string, long double>();

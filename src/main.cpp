@@ -1,7 +1,12 @@
-#include <iostream>
 #include "Calculator.h"
 #include "Lexicography.h"
 #include "Parser.h"
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <memory>
+
 
 const std::string HELP_MESSAGE =
     "=== Calculator Help ===\n"

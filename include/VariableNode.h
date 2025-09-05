@@ -14,9 +14,9 @@
 #define VARIABLENODE_H
 
 #include "Node.h"
+
 #include <stdexcept>
 #include <string>
-#include <memory>
 #include <map>
 
 /**

@@ -22,7 +22,7 @@ Flow:
 3. Parse multiplication/division
     - continue parsing the left side of the operator by parsing power
     - like addition, parsing will stop at a * or / token and return a tree, which is when right side starts
-    - then parse the right side, and like addition/subtraction, the right and left side combined together will serve as the left side if another * or / token is found
+    - then parse the right side, and like addition/subtraction, the right and left side combined will serve as the left side if another * or / token is found
 4. Parse power
     - this case is special. since power is right associative unlike addition/multiplication, we need to parse the right side first
     - however, we will still continue to parse the left side, which might contain parenthesis, unary operators, or functions
@@ -32,7 +32,7 @@ Flow:
     - not special, just trying to find a - token before a number, variable, or parenthesis
     - if found, create a negate node with the parsed unary expression as its child
 6. Parse primary
-	- this is the case that takes the most heirarchy. It includes numbers, variables, functions, and grouping operators: (x) and |x|
+	- this is the case that takes the most hierarchy. It includes numbers, variables, functions, and grouping operators: (x) and |x|
     - it uses checkType() to determine what the current token is and parse accordingly
     - simplest case: number or variable
     - an absolute value operator | is treated like a function, where we parse the expression inside and expect another | to close it.
@@ -57,9 +57,8 @@ Flow:
 #include <iostream>
 #include <algorithm>
 
-using namespace std;
 
-// Constructur, initializes tokens and current index to 0
+// Constructor, initializes tokens and current index to 0
 Parser::Parser(std::vector<Token> tokens) : tokens(std::move(tokens)), currIndex(0) {}
 
 // Helper functions to navigate tokens
@@ -82,29 +81,29 @@ Token& Parser::next() {
 }
 
 // Checks if current token matches given type
-bool Parser::checkType(TokenType type) {
+bool Parser::checkType(const TokenType type) {
     return curr().type == type;
 }
 
 // Checks if next token matches given type
-bool Parser::checkNext(TokenType type){
+bool Parser::checkNext(const TokenType type){
     return next().type == type;
 }
 
 // Public parse function, serves as entry point for main
-unique_ptr<Node> Parser::parse(){
+std::unique_ptr<Node> Parser::parse(){
     return parseExpression();
 }
 
 // Begin private parsing functions
 
 // Entry point for parsing expressions
-unique_ptr<Node> Parser::parseExpression(){
+std::unique_ptr<Node> Parser::parseExpression(){
     return parseAssignment();
 }
 
 // Parses assignment expressions of the form variable = expression
-unique_ptr<Node> Parser::parseAssignment() {
+std::unique_ptr<Node> Parser::parseAssignment() {
     if (Parser::isAssignment()) { 
         if (currIndex + 1 < tokens.size() &&                   // Ensure that input follows correct assignment syntax
             tokens[currIndex].type == TokenType::VARIABLE &&
@@ -113,152 +112,152 @@ unique_ptr<Node> Parser::parseAssignment() {
             currIndex += 2;
             return parseAddition(); // Parse the expression on the right side of the assignment, which can include all other types of expressions
         }
-        else { throw runtime_error("use [variable] = [expression] for assignment"); } // invalid assignment syntax
+        else { throw std::runtime_error("use [variable] = [expression] for assignment"); } // invalid assignment syntax
     }
     return parseAddition(); // if there is no assignment, then continue parsing.
 }
 
-unique_ptr<Node> Parser::parseAddition() { 
-    unique_ptr<Node> left = parseMultiplication(); // continue parsing left side
+std::unique_ptr<Node> Parser::parseAddition() { 
+    std::unique_ptr<Node> left = parseMultiplication(); // continue parsing left side
     while (checkType(TokenType::PLUS) || checkType(TokenType::MINUS)) { // if there is a minus or a plus
-		TokenType op = curr().type; // plus/minus operator
-        next(); // move to next token
-        unique_ptr<Node> right = parseMultiplication(); // parse right side
+		const TokenType op = curr().type; // plus/minus operator
+        next(); // std::move to next token
+        std::unique_ptr<Node> right = parseMultiplication(); // parse right side
 
         // left = (op == TokenType::PLUS) ? 
-        //     make_unique<AddNode>(move(left), move(right)) : 
-        //     make_unique<SubtractNode>(move(left), move(right));
-        if (op == TokenType::PLUS) { left = make_unique<AddNode>(move(left), move(right)); } // make addition node from the left and right sides of the operator
-		else { left = make_unique<SubtractNode>(move(left), move(right)); } // make subtraction node from the left and right sides of the operator
+        //     std::make_unique<AddNode>(std::move(left), std::move(right)) : 
+        //     std::make_unique<SubtractNode>(std::move(left), std::move(right));
+        if (op == TokenType::PLUS) { left = std::make_unique<AddNode>(std::move(left), std::move(right)); } // make addition node from the left and right sides of the operator
+		else { left = std::make_unique<SubtractNode>(std::move(left), std::move(right)); } // make subtraction node from the left and right sides of the operator
 
     }
     return left; // return the left side which now contains the rest of the expression tree
 }
 
-unique_ptr<Node> Parser::parseMultiplication() {
-    unique_ptr<Node> left = parsePower(); // continue parsing left side
+std::unique_ptr<Node> Parser::parseMultiplication() {
+    std::unique_ptr<Node> left = parsePower(); // continue parsing left side
 	while (checkType(TokenType::MULTIPLY) || checkType(TokenType::DIVIDE)) { // if there is a multiply or divide
 		TokenType op = curr().type; // multiply/divide operator
-		next(); // move to next token
-        unique_ptr<Node> right = parsePower(); // continue parse right side
+		next(); // std::move to next token
+        std::unique_ptr<Node> right = parsePower(); // continue parse right side
 
         // left = (op == TokenType::MULTIPLY) ? 
-        //     make_unique<MultiplyNode>(move(left), move(right)) : 
-        //     make_unique<DivideNode>(move(left), move(right));
+        //     std::make_unique<MultiplyNode>(std::move(left), std::move(right)) : 
+        //     std::make_unique<DivideNode>(std::move(left), std::move(right));
 
-		if (op == TokenType::MULTIPLY) { left = make_unique<MultiplyNode>(move(left), move(right)); } // make multiplication node from the left and right sides of the operator
-		else { left = make_unique<DivideNode>(move(left), move(right)); } // make division node from the left and right sides of the operator
+		if (op == TokenType::MULTIPLY) { left = std::make_unique<MultiplyNode>(std::move(left), std::move(right)); } // make multiplication node from the left and right sides of the operator
+		else { left = std::make_unique<DivideNode>(std::move(left), std::move(right)); } // make division node from the left and right sides of the operator
 
     }
     return left;
 }
 
-unique_ptr<Node> Parser::parsePower() { // right associative
-	unique_ptr<Node> left = parseUnary(); // continue parsing left side 
+std::unique_ptr<Node> Parser::parsePower() { // right associative
+	std::unique_ptr<Node> left = parseUnary(); // continue parsing left side 
     if (checkType(TokenType::POWER)) { 
         next();
-        unique_ptr<Node> right = parseUnary(); // parse right side (right-associative)
+        std::unique_ptr<Node> right = parseUnary(); // parse right side (right-associative)
 
-        return make_unique<PowerNode>(move(left), move(right)); // make power node from left and right sides
+        return std::make_unique<PowerNode>(std::move(left), std::move(right)); // make power node from left and right sides
     }
     return left;
 }
 
-unique_ptr<Node> Parser::parseUnary() {
+std::unique_ptr<Node> Parser::parseUnary() {
     if (checkType(TokenType::MINUS)) { 
         next();
-		return make_unique<NegateNode>(parseUnary()); // make negate node with the expression after as its child; call parseUnary again to handle cases like --sin(x)
+		return std::make_unique<NegateNode>(parseUnary()); // make negate node with the expression after as its child; call parseUnary again to handle cases like --sin(x)
     }
     return parsePrimary(); // continue parsing the rest of the expression
 }
 
-unique_ptr<Node> Parser::parsePrimary() {
+std::unique_ptr<Node> Parser::parsePrimary() {
     // Numbers
     if (checkType(TokenType::NUMBER)) {
         long double value = stod(curr().value);
         next();
-        return make_unique<NumberNode>(value);
+        return std::make_unique<NumberNode>(value);
     }
 
     // Vars
 
     if (checkType(TokenType::VARIABLE)) {
-        string name = curr().value;
+        std::string name = curr().value;
         next();
-        return make_unique<VariableNode>(name);
+        return std::make_unique<VariableNode>(name);
     }
 
     // Absolute value
 
     if (checkType(TokenType::ABS)) {
         next();
-        unique_ptr<Node> expr = parseExpression();
+        std::unique_ptr<Node> expr = parseExpression();
         if (!checkType(TokenType::ABS)) {
-            throw runtime_error("expected closing | for absolute value expression");
+            throw std::runtime_error("expected closing | for absolute value expression");
         }
         next();
-        return make_unique<AbsNode>(move(expr));
+        return std::make_unique<AbsNode>(std::move(expr));
     }
 
     // Functions 
 
     if (checkType(TokenType::FUNCTION)) {
-        string funcName = curr().value;
+        std::string funcName = curr().value;
         next();
 
         if (!checkType(TokenType::LEFTPAREN)) {
-                throw runtime_error("expected '(' after function name");
+                throw std::runtime_error("expected '(' after function name");
             }
         next();
         if (funcName == "log") {
-            unique_ptr<Node> arg1 = parseExpression();
+            std::unique_ptr<Node> arg1 = parseExpression();
             if (!checkType(TokenType::COMMA)) {
-                throw runtime_error("expected ',' between log arguments");
+                throw std::runtime_error("expected ',' between log arguments");
             }
             next();
-            unique_ptr<Node> arg2 = parseExpression();
+            std::unique_ptr<Node> arg2 = parseExpression();
 
             if (!checkType(TokenType::RIGHTPAREN)) {
-                throw runtime_error("expected ')' after function arguments");
+                throw std::runtime_error("expected ')' after function arguments");
             }
             next();
-            return make_unique<LogNode>(move(arg1), move(arg2));
+            return std::make_unique<LogNode>(std::move(arg1), std::move(arg2));
         }
 
-        unique_ptr<Node> argument = parseExpression();
+        std::unique_ptr<Node> argument = parseExpression();
 
         if (!checkType(TokenType::RIGHTPAREN)) {
-            throw runtime_error("expected ')' after function argument");
+            throw std::runtime_error("expected ')' after function argument");
         }
         next();
 
-        if (funcName == "sin") { return make_unique<SinNode>(move(argument)); }
-        if (funcName == "cos") { return make_unique<CosNode>(move(argument)); }
-        if (funcName == "tan") { return make_unique<TanNode>(move(argument)); }
-        if (funcName == "asin") { return make_unique<ArcSinNode>(move(argument)); }
-        if (funcName == "acos") { return make_unique<ArcCosNode>(move(argument)); }
-        if (funcName == "atan") { return make_unique<ArcTanNode>(move(argument)); }
-        if (funcName == "exp") { return make_unique<ExpNode>(move(argument)); }
-        if (funcName == "ln") { return make_unique<LnNode>(move(argument)); }
-        if (funcName == "log10") { return make_unique<LogTenNode>(move(argument)); }
-        if (funcName == "sqrt") { return make_unique<SqrtNode>(move(argument)); }
-        if (funcName == "abs") { return make_unique<AbsNode>(move(argument)); }
+        if (funcName == "sin") { return std::make_unique<SinNode>(std::move(argument)); }
+        if (funcName == "cos") { return std::make_unique<CosNode>(std::move(argument)); }
+        if (funcName == "tan") { return std::make_unique<TanNode>(std::move(argument)); }
+        if (funcName == "asin") { return std::make_unique<ArcSinNode>(std::move(argument)); }
+        if (funcName == "acos") { return std::make_unique<ArcCosNode>(std::move(argument)); }
+        if (funcName == "atan") { return std::make_unique<ArcTanNode>(std::move(argument)); }
+        if (funcName == "exp") { return std::make_unique<ExpNode>(std::move(argument)); }
+        if (funcName == "ln") { return std::make_unique<LnNode>(std::move(argument)); }
+        if (funcName == "log10") { return std::make_unique<LogTenNode>(std::move(argument)); }
+        if (funcName == "sqrt") { return std::make_unique<SqrtNode>(std::move(argument)); }
+        if (funcName == "abs") { return std::make_unique<AbsNode>(std::move(argument)); }
 
-        throw runtime_error(funcName + " is not recognized as a variable, function, or operation");
+        throw std::runtime_error(funcName + " is not recognized as a variable, function, or operation");
 
     }
 
     if (checkType(TokenType::LEFTPAREN)) {
         next();
-        unique_ptr<Node> expr = parseExpression();
+        std::unique_ptr<Node> expr = parseExpression();
         if (!checkType(TokenType::RIGHTPAREN)) {
-            throw runtime_error("expected ')' after expression");
+            throw std::runtime_error("expected ')' after expression");
         }
         next();
         return expr;
     }
 
-    throw runtime_error("unexpected element in expression");
+    throw std::runtime_error("unexpected element in expression");
 
 }
 
@@ -268,7 +267,7 @@ bool Parser::parsePreserve() {
         return true;
     }
     else if (std::any_of(tokens.begin(), tokens.end(), [](const Token& t) { return t.type == TokenType::PRESERVE; })) {
-        throw runtime_error("invalid preserve variable syntax! Use remove [variable] to remove a variable from preserved variables");
+        throw std::runtime_error("invalid preserve variable syntax! Use restd::move [variable] to restd::move a variable from preserved variables");
     }
     return false;
 }
@@ -279,7 +278,7 @@ bool Parser::parseRemove() {
         return true;
     }
     else if (std::any_of(tokens.begin(), tokens.end(), [](const Token& t) { return t.type == TokenType::REMOVE; })) {
-        throw runtime_error("invalid remove variable syntax! Use remove [variable] to remove a variable from preserved variables");
+        throw std::runtime_error("invalid restd::move variable syntax! Use restd::move [variable] to restd::move a variable from preserved variables");
     }
     return false;
 }

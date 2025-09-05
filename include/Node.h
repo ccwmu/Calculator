@@ -13,8 +13,8 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include <map>
 #include <string>
+#include <map>
 #include <memory>
 
 /**

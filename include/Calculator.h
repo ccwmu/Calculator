@@ -16,9 +16,12 @@
 
 #include "Node.h"
 #include "Lexicography.h"
-#include <set>
+
 #include <map>
 #include <memory>
+#include <set>
+#include <string>
+#include <vector>
 
 
 /**

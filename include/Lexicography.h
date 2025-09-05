@@ -1,7 +1,7 @@
 #ifndef LEXICOGRAPHY_H
 #define LEXICOGRAPHY_H
 
-#include "Node.h"
+#include <string>
 #include <vector>
 
 enum class TokenType {
