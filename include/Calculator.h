@@ -16,7 +16,6 @@
 
 #include "Node.h"
 #include "Lexicography.h"
-#include <stdexcept>
 #include <set>
 
 using namespace std;
