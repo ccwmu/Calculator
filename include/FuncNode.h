@@ -11,8 +11,7 @@
  * 
  */
 
-#ifndef FUNCNODE_H
-#define FUNCNODE_H
+#pragma once
 
 #include "Node.h"
 
@@ -466,5 +465,3 @@ public:
         return new SqrtNode(std::unique_ptr<Node>(child->clone()));
     }
 };
-
-#endif // FUNCNODE_H

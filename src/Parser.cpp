@@ -40,8 +40,16 @@ Flow:
     - if function token is found then expect a left parenthesis
         - if function is a log, parse expression then expect a comma, if not then throw runtime error
         - if function is not a log, parse expression 
-        - 
-
+        - create a function node with the corresponding function name and the parsed expression as its child.
+        - expect a right parenthesis to close the function call, if not then throw runtime error
+    - if left parenthesis is found, parse the expression inside and expect a right parenthesis to close it, if not then throw runtime error
+    - if none of the above cases are met, then throw runtime error
+7. Parse preserve variable and remove variable
+    - this is an oddball case. It is not part of the expression parsing, but it is easier to handle here because the lexer already tokenizes it
+    and I don't want to handle tokens in main.
+    - it the first token is a PRESERVE or REMOVE token, then expect the second token to be a variable and nothing else
+    - if the syntax is correct then return true indicating that the user input is a preserve/remove command
+    - if syntax is incorrect then throw runtime error
 */
 #include "Parser.h"
 #include "NumberNode.h"
@@ -66,7 +74,7 @@ Parser::Parser(std::vector<Token> tokens) : tokens(std::move(tokens)), currIndex
 // Increments to previous token if possible and return it, otherwise return current token
 Token& Parser::prev() {
     if (currIndex > 0) { return tokens[--currIndex]; }
-    else { return tokens[currIndex]; }
+    return tokens[currIndex];
 }
 
 // Returns current token
@@ -77,17 +85,12 @@ Token& Parser::curr() {
 // Increments to next token if possible and return it, otherwise return current token
 Token& Parser::next() {
     if (currIndex < tokens.size()-1) { return tokens[++currIndex]; }
-    else { return tokens[currIndex]; }
+    return tokens[currIndex];
 }
 
 // Checks if current token matches given type
 bool Parser::checkType(const TokenType type) {
     return curr().type == type;
-}
-
-// Checks if next token matches given type
-bool Parser::checkNext(const TokenType type){
-    return next().type == type;
 }
 
 // Public parse function, serves as entry point for main
@@ -267,7 +270,7 @@ bool Parser::parsePreserve() {
         return true;
     }
     else if (std::any_of(tokens.begin(), tokens.end(), [](const Token& t) { return t.type == TokenType::PRESERVE; })) {
-        throw std::runtime_error("invalid preserve variable syntax! Use restd::move [variable] to restd::move a variable from preserved variables");
+        throw std::runtime_error("invalid preserve variable syntax! Use preserve [variable] to add a variable to preserved variables");
     }
     return false;
 }
@@ -278,7 +281,7 @@ bool Parser::parseRemove() {
         return true;
     }
     else if (std::any_of(tokens.begin(), tokens.end(), [](const Token& t) { return t.type == TokenType::REMOVE; })) {
-        throw std::runtime_error("invalid restd::move variable syntax! Use restd::move [variable] to restd::move a variable from preserved variables");
+        throw std::runtime_error("invalid remove variable syntax! Use remove [variable] to remove a variable from preserved variables");
     }
     return false;
 }
