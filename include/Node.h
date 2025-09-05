@@ -9,9 +9,7 @@
  * All node classes inherit from this class and implement these functions.
 */
 
-
-#ifndef NODE_H
-#define NODE_H
+#pragma once
 
 #include <string>
 #include <map>
@@ -50,5 +48,3 @@ public:
      */ 
     virtual Node* clone() const = 0;
 };
-
-#endif // NODE_H

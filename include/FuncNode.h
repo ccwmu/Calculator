@@ -21,7 +21,6 @@
 #include <stdexcept>
 #include <string>
 
-
 /**
  * @class SinNode
  * @brief Node representing sine operation

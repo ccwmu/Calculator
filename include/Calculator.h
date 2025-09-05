@@ -11,8 +11,7 @@
  * better result statements.
 */
 
-#ifndef CALCULATOR_H
-#define CALCULATOR_H
+#pragma once
 
 #include "Node.h"
 #include "Lexicography.h"
@@ -122,5 +121,3 @@ public:
 	void removePreservedValue(const std::string& name);
 
 };
-
-#endif //CALCULATOR_H

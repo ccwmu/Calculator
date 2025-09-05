@@ -1,3 +1,16 @@
+/**
+ * @file Lexicography.cpp
+ * @brief Implementation for Lexicography class
+ * @author Ethan Ye
+ * @date 2025-8-18
+ *
+ * This file implements the Lexicography class which provides the functions to
+ * tokenize input into a vector of tokens. It recognizes all the tokens in the
+ * TokenType enum, including numbers, variables, functions, operators,
+ * parentheses, and special commands like preserve and remove.
+ *
+ */
+
 #include "Lexicography.h"
 
 #include <cctype>
@@ -22,13 +35,14 @@ std::vector<Token> tokenize(const std::string& input) {
         }
 
         else if (isalpha(c)){ //parse variable or function
-            std::string word;
+            std::string word; // we don't know yet if it's a variable or a function so just name it word
             while (isalpha(c) || isdigit(c) || c == '_') {
                 word += c;
                 c = input[++i];
             }
             i--;
 
+            // if the word is a recognized function name then it's a function token
             if (word == "sin" ||
                 word == "cos" ||
                 word == "tan" ||
@@ -45,11 +59,15 @@ std::vector<Token> tokenize(const std::string& input) {
             ){
                 tokens.emplace_back(TokenType::FUNCTION, word);
             }
+
+            // if the word is "preserve" or "remove" then it's a special command token
             else if (word == "preserve") { tokens.emplace_back(TokenType::PRESERVE, word); }
             else if (word == "remove") { tokens.emplace_back(TokenType::REMOVE, word); }
+
+            // otherwise it's a variable token
             else { tokens.emplace_back(TokenType::VARIABLE, word); }
         }
-        else { // parse operators and punctuation, and throw runtime error when not recognized
+        else { // parse operators and punctuation, and throw runtime error when not recognized, using switch case for easier editing, clarity, and adding new operators
             switch (c) {
                 case '+': tokens.emplace_back(TokenType::PLUS, "+"); break;
                 case '-': tokens.emplace_back(TokenType::MINUS, "-"); break;
@@ -61,6 +79,7 @@ std::vector<Token> tokenize(const std::string& input) {
                 case '=': tokens.emplace_back(TokenType::ASSIGN, "="); break;
                 case ',': tokens.emplace_back(TokenType::COMMA, ","); break;
                 case '|': tokens.emplace_back(TokenType::ABS, "|"); break;
+                case '!': tokens.emplace_back(TokenType::FACTORIAL, "!"); break;
                 default: throw std::runtime_error(std::string(1, c) + " is not recognized as a variable, function, or operation");
             }
         }

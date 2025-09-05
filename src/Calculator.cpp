@@ -1,3 +1,15 @@
+/**
+ * @file Calculator.cpp
+ * @brief Implementation of the Calculator class for evaluating mathematical expressions.
+ * @author Ethan Ye
+ * @date 2025-8-18
+ *
+ * This file contains the implementation of the Calculator class, which provides methods to
+ * evaluate mathematical expressions represented as abstract syntax trees (ASTs). It supports
+ * variable assignment, predefined constants, and formatting of numerical results.
+ *
+ */
+
 #include "Calculator.h"
 #include "VariableNode.h"
 
@@ -10,29 +22,36 @@
 
 
 Calculator::Calculator() {
+
+    // Variables and their corresponding nodes
     variables = std::map<std::string, long double>();
     varNodes = std::map<std::string, std::unique_ptr<Node>>();
+
     // Predefined variables
 	assign("pi", 3.141592653589793);
 	assign("e", 2.718281828459045);
 	assign("deg2rad", 3.141592653589793 / 180);
 	assign("rad2deg", 180 / 3.141592653589793);
 
+    // Preserved variables
     addPreservedValue("pi");
     addPreservedValue("e");
     addPreservedValue("deg2rad");
     addPreservedValue("rad2deg");
 }
 
+// Evaluates the given expression node and returns the result
 long double Calculator::evaluate(std::unique_ptr<Node> expression) {
     return expression->evaluate(variables);
 }
 
+// Assigns a value to a variable and creates its corresponding VariableNode
 void Calculator::assign(const std::string& name, long double value) {
     variables[name] = value;
     varNodes[name] = std::make_unique<VariableNode>(name);
 }
 
+// Retrieves a clone of the VariableNode for the given variable name
 std::unique_ptr<Node> Calculator::getVariable(const std::string& name)  {
     auto thing = varNodes.find(name);
     if (thing != varNodes.end()) {
@@ -41,16 +60,19 @@ std::unique_ptr<Node> Calculator::getVariable(const std::string& name)  {
     throw std::runtime_error("variable not found");
 }
 
+// Sets the value of an existing variable
 void Calculator::setVariable(const std::string& name, long double value) {
     variables[name] = value;
 }
 
+// Prints all variables and their values
 void Calculator::printVars() const {
     for (const auto& pair : variables) {
         std::cout << pair.first << " = " << pair.second << std::endl;
     }
 }
 
+// Clears all variables except those that are preserved
 void Calculator::clear() {
 	std::map<std::string, long double> preservedVars;
     for (const auto& name : preservedValues) {
@@ -68,6 +90,7 @@ void Calculator::clear() {
     }
 }
 
+// Formats a long double to a string, removing unnecessary trailing zeros
 std::string Calculator::formatNumber(long double value) {
     std::string str = std::to_string(value);
     // Remove trailing zeros
@@ -79,7 +102,7 @@ std::string Calculator::formatNumber(long double value) {
     return str;
 }
 
-
+// Adds a variable to the set of preserved values
 void Calculator::addPreservedValue(const std::string& name) {
     if (variables.find(name) == variables.end()) {
 		throw std::runtime_error("variable " + name + " does not exist and cannot be preserved.");
@@ -87,10 +110,12 @@ void Calculator::addPreservedValue(const std::string& name) {
 	preservedValues.insert(name);
 }
 
+// Removes a variable from the set of preserved values
 void Calculator::removePreservedValue(const std::string& name) {
     preservedValues.erase(name);
 }
 
+// Formats and prints a list of tokens as a string
 std::string Calculator::printTokens(std::vector<Token> tokens)
 {
     std::string result = "";

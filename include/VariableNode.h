@@ -9,9 +9,7 @@
  * values, and to clone the node.
 */
 
-
-#ifndef VARIABLENODE_H
-#define VARIABLENODE_H
+#pragma once
 
 #include "Node.h"
 
@@ -62,5 +60,4 @@ public:
     }
 };
 
-#endif // VARIABLENODE_H
 

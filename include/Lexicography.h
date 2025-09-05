@@ -10,8 +10,7 @@
  *
  */
 
-#ifndef LEXICOGRAPHY_H
-#define LEXICOGRAPHY_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -34,6 +33,7 @@ enum class TokenType {
     MULTIPLY,  ///< Multiplication operator (*)
     DIVIDE,    ///< Division operator (/)
     POWER,     ///< Exponentiation operator (^)
+    FACTORIAL, ///< Factorial operator (!)
     LEFTPAREN, ///< Left parenthesis "("
     RIGHTPAREN,///< Right parenthesis ")"
     ASSIGN,    ///< Assignment operator (=)
@@ -76,5 +76,3 @@ struct Token {
  * of Tokens that can be used for further parsing and evaluation.
  */
 std::vector<Token> tokenize(const std::string& input);
-
-#endif //LEXICOGRAPHY_H

@@ -45,11 +45,36 @@ Flow:
     - if left parenthesis is found, parse the expression inside and expect a right parenthesis to close it, if not then throw runtime error
     - if none of the above cases are met, then throw runtime error
 7. Parse preserve variable and remove variable
-    - this is an oddball case. It is not part of the expression parsing, but it is easier to handle here because the lexer already tokenizes it
+    - this is an oddball case. It is technically not part of the expression parsing, but it is easier to handle here because the lexer already tokenizes it
     and I don't want to handle tokens in main.
     - it the first token is a PRESERVE or REMOVE token, then expect the second token to be a variable and nothing else
     - if the syntax is correct then return true indicating that the user input is a preserve/remove command
     - if syntax is incorrect then throw runtime error
+
+Example:
+
+A sample input would be x = sin(3.14159/2) + 5^2 * |-3|
+Lexicography would parse this into the following tokens:
+[VARIABLE, x], [ASSIGN, =], [FUNCTION, sin], [LEFTPAREN, (], [NUMBER, 3.14159], [DIVIDE, /], [NUMBER, 2], [RIGHTPAREN, )], [PLUS, +], [NUMBER, 5], [POWER, ^],
+[NUMBER, 2], [MULTIPLY, *], [ABS, |], [MINUS, -], [NUMBER, 3], [ABS, |]
+The parser would then parse this into the following AST:
+
+          AssignNode
+         /          \
+   VariableNode    AddNode
+      (x)        /        \
+              SinNode    MultiplyNode
+               |         /           \
+           DivideNode   PowerNode    AbsNode
+           /     \     /        \          \
+      Number(3.14159) /     Number(5)     NegateNode
+                   Number(2)                  \
+                                         Number(3)
+
+The main loop would then evaluate this AST from the bottom up. Due to the order the parsing functions are called, the tree is structured so that high
+priority operations are lower, so they are evaluated first. Then the result is returned to the top, where the assignment node would assign the final result to
+the variable x. If there were no assignment and the input was just sin(3.14159/2) + 5^2 * |-3|, then the entry of the tree would just be the first AddNode, and
+the final result would be returned directly to the main function.
 */
 #include "Parser.h"
 #include "NumberNode.h"

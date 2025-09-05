@@ -1,3 +1,15 @@
+/**
+ * @file main.cpp
+ * @brief Main loop for calculator application
+ * @author Ethan Ye
+ * @date 2025-8-18
+ *
+ * This file contains the main loop for the calculator application.
+ * It handles user input, and calls on the lexer, parser, and evaluator to process expressions.
+ * It also provides a help message and handles special commands like "vars" and "clear".
+ * Using a try-catch block, it handles errors and provides error info to the user.
+ *
+ */
 #include "Calculator.h"
 #include "Lexicography.h"
 #include "Parser.h"
@@ -7,7 +19,7 @@
 #include <string>
 #include <memory>
 
-
+// Help message, courtesy of ChatGPT
 const std::string HELP_MESSAGE =
     "=== Calculator Help ===\n"
     "\n"
@@ -66,30 +78,40 @@ int main() {
     using std::string;
     using std::vector;
 
+    // Initialize calculator and input string
     Calculator calc;
     string input;
 
     cout << "Calculator (in development)" << endl;
     cout << "Type 'help' for assistance." << endl;
 
+    // Main loop
     while (true) {
         cout << "> ";
         getline(cin, input);
-        if (input.empty()) continue;
-        if (input == "exit" || input == "quit") break;
-        if (input == "help") { cout << HELP_MESSAGE << endl; continue; }
-        if (input == "vars") { calc.printVars(); continue; }
-        if (input == "clear") { calc.clear(); cout << "Variables cleared." << endl; continue; }
+        if (input.empty()) continue; // Skip empty input
+
+        // Handle special commands
+        if (input == "exit" || input == "quit") break; // Exit loop
+        if (input == "help") { cout << HELP_MESSAGE << endl; continue; } // Print help message
+        if (input == "vars") { calc.printVars(); continue; } // Print variables
+        if (input == "clear") { calc.clear(); cout << "Variables cleared." << endl; continue; } // Clear variables
+
         // Process input
         try {
+
+            // Tokenize input
             vector<Token> tokens = tokenize(input);
             //cout << "Tokens: ";
             //for (const auto& token : tokens) {
             //    cout << "[" << static_cast<int>(token.type) << ", " << token.value << "], ";
             //}
             //cout << endl;
+
+            // Initialize parser with the tokens
             Parser parser(tokens);
 
+            // Handle preserve and remove commands
             if (parser.parsePreserve()) {
 				calc.addPreservedValue(parser.getAssignVar());
 				cout << "Variable " << parser.getAssignVar() << " has been preserved." << endl;
@@ -102,8 +124,10 @@ int main() {
                 continue;
             }
 
+            // Parse the expression into the tree
             std::unique_ptr<Node> expression = parser.parse();
 
+            // If the input was an assigment then assign the variable
             if (parser.isAssignment()) {
                 //cout << "variable" << endl;
                 string varName = parser.getAssignVar();
@@ -113,14 +137,17 @@ int main() {
 				//cout << "varName: " << varName << endl;
 				//cout << "result: " << result << endl;
                 cout << varName << " = " << result << endl;
-            } 
+            }
+
+            // Otherwise evaluate the expression and print the result
             else {
 				//cout << "expression" << endl;
                 long double result = calc.evaluate(std::move(expression));
                 cout << calc.printTokens(tokens) << "= " << result << endl;
             }
+        // error handling
         } catch (const std::exception& e) {
-            cout << "Error: " << e.what() << endl;
+            cout << "Error: " << e.what() << endl; // print error message
         }
     }
 

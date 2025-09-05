@@ -8,8 +8,7 @@
  * nodes for the AST. Operations included are negation and absolute value.
 */
 
-#ifndef UNARYOPNODE_H
-#define UNARYOPNODE_H
+#pragma once
 
 #include "Node.h"
 
@@ -130,5 +129,3 @@ public:
 		return new FactorialNode(std::unique_ptr<Node>(child->clone()));
     }
 };
-
-#endif // UNARYOPNODE_H

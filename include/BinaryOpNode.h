@@ -9,8 +9,7 @@
  * division, and exponentiation.
  */
 
-#ifndef BINARYOPNODE_H
-#define BINARYOPNODE_H
+#pragma once
 
 #include "Node.h"
 
@@ -226,5 +225,3 @@ public:
         return new PowerNode(std::unique_ptr<Node>(base->clone()), std::unique_ptr<Node>(exponent->clone()));
     }
 };
-
-#endif // BINARYOPNODE_H
