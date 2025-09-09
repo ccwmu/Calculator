@@ -29,8 +29,12 @@ Flow:
     - then we parse the right side as another power expression, for cases like 2^(3+1)^4. This ensures that (3+1)^4 is parsed first, then 2^[(3+1)^4].
     - once no more ^ tokens are found, then continue parsing
 5. Parse unary
-    - not special, just trying to find a - token before a number, variable, or parenthesis
+    - not except for factorial, just trying to find a - token before a number, variable, or parenthesis
     - if found, create a negate node with the parsed unary expression as its child
+    - if not found, then continue parsing primary
+    - after parsePrimary is called, check for factorials, which are postfix unary operators
+        - if found, create a factorial node with the parsed primary expression as its child
+        - continue checking for more factorials until none are found using while
 6. Parse primary
 	- this is the case that takes the most hierarchy. It includes numbers, variables, functions, and grouping operators: (x) and |x|
     - it uses checkType() to determine what the current token is and parse accordingly
@@ -192,11 +196,21 @@ std::unique_ptr<Node> Parser::parsePower() { // right associative
 }
 
 std::unique_ptr<Node> Parser::parseUnary() {
+    std::unique_ptr<Node> node;
     if (checkType(TokenType::MINUS)) { 
         next();
-		return std::make_unique<NegateNode>(parseUnary()); // make negate node with the expression after as its child; call parseUnary again to handle cases like --sin(x)
+		node = std::make_unique<NegateNode>(parseUnary()); // make negate node with the expression after as its child; call parseUnary again to handle cases like --sin(x)
     }
-    return parsePrimary(); // continue parsing the rest of the expression
+    else { node = parsePrimary(); } // continue parsing the rest of the expression
+
+    // after parsePrimary is called check for factorials, which are postfix unary operators
+    while (checkType(TokenType::FACTORIAL)) {
+        next();
+        node = std::make_unique<FactorialNode>(std::move(node));
+    }
+
+    return node;
+
 }
 
 std::unique_ptr<Node> Parser::parsePrimary() {
@@ -230,7 +244,7 @@ std::unique_ptr<Node> Parser::parsePrimary() {
     // Functions 
 
     if (checkType(TokenType::FUNCTION)) {
-        std::string funcName = curr().value;
+        const std::string funcName = curr().value;
         next();
 
         if (!checkType(TokenType::LEFTPAREN)) {
