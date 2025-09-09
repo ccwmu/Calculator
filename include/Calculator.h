@@ -53,7 +53,7 @@ public:
 	* @param expression A unique pointer to the root node of the AST representing the expression
 	* @return The result of evaluating the expression as a long double
     */ 
-    long double evaluate(std::unique_ptr<Node> expression);
+    [[nodiscard]] long double evaluate(const std::unique_ptr<Node>& expression) const;
     
 	/**
 	* @brief Assigns a value to a variable and creates its corresponding AST node
@@ -64,7 +64,7 @@ public:
 
     /**
 	* @brief Retrieves the AST node corresponding to a variable
-	* @param The name of the variable to retrieve
+	* @param name The name of the variable to retrieve
 	* @return A unique pointer to the AST node representing the variable
 	* @throws runtime_error if the variable does not exist
     */ 
@@ -84,7 +84,6 @@ public:
 
 	/**
 	* @brief Clears all user-defined variables while preserving predefined constants
-	* @param toPreserve A map of variable names to values to preserve
 	*/ 
     void clear();
 
@@ -93,20 +92,20 @@ public:
 	* @param tokens A vector of Token objects to format
 	* @return A formatted string representation of the tokens
 	*/ 
-    std::string printTokens(std::vector<Token> tokens);
+    static std::string printTokens(const std::vector<Token>& tokens);
 
 	/**
 	* @brief Formats a long double into a string, removing unnecessary trailing zeros
 	* @param value The long double value to format
 	* @return A string representation of the number without trailing zeros.
 	*/ 
-	std::string formatNumber(long double value);
+	static std::string formatNumber(long double value);
 
 	/**
 	 * @brief Gets the map of preserved variable names to values
 	 * @return The map of preserved variable names to values
 	 */
-	std::set<std::string> getPreservedValues() const { return preservedValues; }
+	[[nodiscard]] std::set<std::string> getPreservedValues() const { return preservedValues; }
 
 	/**
 	 * @brief Adds a variable name to the list of preserved variables

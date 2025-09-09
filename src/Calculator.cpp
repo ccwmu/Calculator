@@ -20,7 +20,6 @@
 #include <string>
 #include <vector>
 
-
 Calculator::Calculator() {
 
     // Variables and their corresponding nodes
@@ -41,34 +40,33 @@ Calculator::Calculator() {
 }
 
 // Evaluates the given expression node and returns the result
-long double Calculator::evaluate(std::unique_ptr<Node> expression) {
+long double Calculator::evaluate(const std::unique_ptr<Node>& expression) const {
     return expression->evaluate(variables);
 }
 
 // Assigns a value to a variable and creates its corresponding VariableNode
-void Calculator::assign(const std::string& name, long double value) {
+void Calculator::assign(const std::string& name, const long double value) {
     variables[name] = value;
     varNodes[name] = std::make_unique<VariableNode>(name);
 }
 
 // Retrieves a clone of the VariableNode for the given variable name
 std::unique_ptr<Node> Calculator::getVariable(const std::string& name)  {
-    auto thing = varNodes.find(name);
-    if (thing != varNodes.end()) {
+    if (const auto thing = varNodes.find(name); thing != varNodes.end()) {
         return std::unique_ptr<Node>(thing->second->clone());
     }
     throw std::runtime_error("variable not found");
 }
 
 // Sets the value of an existing variable
-void Calculator::setVariable(const std::string& name, long double value) {
+void Calculator::setVariable(const std::string& name, const long double value) {
     variables[name] = value;
 }
 
 // Prints all variables and their values
 void Calculator::printVars() const {
-    for (const auto& pair : variables) {
-        std::cout << pair.first << " = " << pair.second << std::endl;
+    for (const auto&[fst, snd] : variables) {
+        std::cout << fst << " = " << snd << std::endl;
     }
 }
 
@@ -76,8 +74,7 @@ void Calculator::printVars() const {
 void Calculator::clear() {
 	std::map<std::string, long double> preservedVars;
     for (const auto& name : preservedValues) {
-        auto it = variables.find(name);
-        if (it != variables.end()) {
+        if (auto it = variables.find(name); it != variables.end()) {
             preservedVars[name] = it->second;
         }
     }
@@ -85,13 +82,13 @@ void Calculator::clear() {
     variables.clear();
     varNodes.clear();
 
-    for (const auto& pair : preservedVars) {
-		assign(pair.first, pair.second);
+    for (const auto&[fst, snd] : preservedVars) {
+		assign(fst, snd);
     }
 }
 
 // Formats a long double to a string, removing unnecessary trailing zeros
-std::string Calculator::formatNumber(long double value) {
+std::string Calculator::formatNumber(const long double value) {
     std::string str = std::to_string(value);
     // Remove trailing zeros
     str.erase(str.find_last_not_of('0') + 1, std::string::npos);
@@ -116,11 +113,10 @@ void Calculator::removePreservedValue(const std::string& name) {
 }
 
 // Formats and prints a list of tokens as a string
-std::string Calculator::printTokens(std::vector<Token> tokens)
+std::string Calculator::printTokens(const std::vector<Token>& tokens)
 {
-    std::string result = "";
+    std::string result;
     //not to be confused with a debug function
-    TokenType prevType = TokenType::END;
     size_t absCounter = 0;
     for (size_t i = 0; i < tokens.size(); ++i) {
         const Token& token = tokens[i];
@@ -139,7 +135,6 @@ std::string Calculator::printTokens(std::vector<Token> tokens)
             // closing parenthesis or a comma right after
             if (i + 1 < tokens.size() && tokens[i + 1].type == TokenType::RIGHTPAREN ||
                 i + 1 < tokens.size() && tokens[i + 1].type == TokenType::COMMA) {
-                prevType = token.type;
                 continue;
             }
             result += " ";
@@ -152,7 +147,6 @@ std::string Calculator::printTokens(std::vector<Token> tokens)
             // Same as in number, we don't want a space if there is a closing paren or a comma.
             if (i + 1 < tokens.size() && tokens[i + 1].type == TokenType::RIGHTPAREN ||
                 i + 1 < tokens.size() && tokens[i + 1].type == TokenType::COMMA) {
-                prevType = token.type;
                 continue;
             }
             result += " ";
@@ -180,7 +174,6 @@ std::string Calculator::printTokens(std::vector<Token> tokens)
             else { result += token.value + " "; }
             absCounter++;
         }
-        prevType = token.type;
         
         // Sometimes we want a space after right parenthesis, but sometimes we don't.
         if (token.type == TokenType::RIGHTPAREN) {

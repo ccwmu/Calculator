@@ -156,7 +156,7 @@ std::unique_ptr<Node> Parser::parseAddition() {
         //     std::make_unique<AddNode>(std::move(left), std::move(right)) : 
         //     std::make_unique<SubtractNode>(std::move(left), std::move(right));
         if (op == TokenType::PLUS) { left = std::make_unique<AddNode>(std::move(left), std::move(right)); } // make addition node from the left and right sides of the operator
-		else { left = std::make_unique<SubtractNode>(std::move(left), std::move(right)); } // make subtraction node from the left and right sides of the operator
+        else { left = std::make_unique<SubtractNode>(std::move(left), std::move(right)); } // make subtraction node from the left and right sides of the operator
 
     }
     return left; // return the left side which now contains the rest of the expression tree
@@ -165,7 +165,7 @@ std::unique_ptr<Node> Parser::parseAddition() {
 std::unique_ptr<Node> Parser::parseMultiplication() {
     std::unique_ptr<Node> left = parsePower(); // continue parsing left side
 	while (checkType(TokenType::MULTIPLY) || checkType(TokenType::DIVIDE)) { // if there is a multiply or divide
-		TokenType op = curr().type; // multiply/divide operator
+		const TokenType op = curr().type; // multiply/divide operator
 		next(); // std::move to next token
         std::unique_ptr<Node> right = parsePower(); // continue parse right side
 
@@ -237,7 +237,7 @@ std::unique_ptr<Node> Parser::parsePrimary() {
                 throw std::runtime_error("expected '(' after function name");
             }
         next();
-        if (funcName == "log") {
+        if (funcName == "log" || funcName == "pow") {
             std::unique_ptr<Node> arg1 = parseExpression();
             if (!checkType(TokenType::COMMA)) {
                 throw std::runtime_error("expected ',' between log arguments");
@@ -249,7 +249,9 @@ std::unique_ptr<Node> Parser::parsePrimary() {
                 throw std::runtime_error("expected ')' after function arguments");
             }
             next();
-            return std::make_unique<LogNode>(std::move(arg1), std::move(arg2));
+            
+            if (funcName == "log") { return std::make_unique<LogNode>(std::move(arg1), std::move(arg2)); }
+            if (funcName == "pow") { return std::make_unique<PowerNode>(std::move(arg1), std::move(arg2)); }
         }
 
         std::unique_ptr<Node> argument = parseExpression();
@@ -270,6 +272,7 @@ std::unique_ptr<Node> Parser::parsePrimary() {
         if (funcName == "log10") { return std::make_unique<LogTenNode>(std::move(argument)); }
         if (funcName == "sqrt") { return std::make_unique<SqrtNode>(std::move(argument)); }
         if (funcName == "abs") { return std::make_unique<AbsNode>(std::move(argument)); }
+        if (funcName == "fact") { return std::make_unique<FactorialNode>(std::move(argument)); }
 
         throw std::runtime_error(funcName + " is not recognized as a variable, function, or operation");
 
@@ -294,7 +297,7 @@ bool Parser::parsePreserve() {
 		assignmentVar = tokens[1].value;
         return true;
     }
-    else if (std::any_of(tokens.begin(), tokens.end(), [](const Token& t) { return t.type == TokenType::PRESERVE; })) {
+    if (std::any_of(tokens.begin(), tokens.end(), [](const Token& t) { return t.type == TokenType::PRESERVE; })) {
         throw std::runtime_error("invalid preserve variable syntax! Use preserve [variable] to add a variable to preserved variables");
     }
     return false;
@@ -305,7 +308,7 @@ bool Parser::parseRemove() {
 		assignmentVar = tokens[1].value;
         return true;
     }
-    else if (std::any_of(tokens.begin(), tokens.end(), [](const Token& t) { return t.type == TokenType::REMOVE; })) {
+    if (std::any_of(tokens.begin(), tokens.end(), [](const Token& t) { return t.type == TokenType::REMOVE; })) {
         throw std::runtime_error("invalid remove variable syntax! Use remove [variable] to remove a variable from preserved variables");
     }
     return false;

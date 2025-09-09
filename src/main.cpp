@@ -101,7 +101,7 @@ int main() {
         try {
 
             // Tokenize input
-            vector<Token> tokens = tokenize(input);
+            const vector<Token> tokens = tokenize(input);
             //cout << "Tokens: ";
             //for (const auto& token : tokens) {
             //    cout << "[" << static_cast<int>(token.type) << ", " << token.value << "], ";
@@ -131,7 +131,7 @@ int main() {
             if (parser.isAssignment()) {
                 //cout << "variable" << endl;
                 string varName = parser.getAssignVar();
-                long double result = calc.evaluate(std::move(expression));
+                const long double result = calc.evaluate(std::move(expression));
                 calc.assign(varName, result);
 
 				//cout << "varName: " << varName << endl;
@@ -142,7 +142,7 @@ int main() {
             // Otherwise evaluate the expression and print the result
             else {
 				//cout << "expression" << endl;
-                long double result = calc.evaluate(std::move(expression));
+                const long double result = calc.evaluate(std::move(expression));
                 cout << calc.printTokens(tokens) << "= " << result << endl;
             }
         // error handling

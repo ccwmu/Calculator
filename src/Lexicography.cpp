@@ -55,7 +55,8 @@ std::vector<Token> tokenize(const std::string& input) {
                 word == "logten" ||
                 word == "ln" ||
                 word == "abs" ||
-                word == "pow"
+                word == "pow" ||
+                word == "fact"
             ){
                 tokens.emplace_back(TokenType::FUNCTION, word);
             }
